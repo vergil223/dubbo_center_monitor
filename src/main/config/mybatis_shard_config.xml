@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE shardingConfig PUBLIC "-//shardbatis.googlecode.com//DTDShardbatis 2.0//EN"
+"http://shardbatis.googlecode.com/dtd/shardbatis-config.dtd">
+
+<shardingConfig>
+	<parseList>
+		<value>DUBBO_METHOD_DAY_IP.insert</value>
+		<value>DUBBO_METHOD_DAY_IP.append</value>
+		<value>DUBBO_METHOD_DAY_IP.selectList</value>
+	</parseList>
+
+	<strategy tableName="DUBBO_METHOD_DAY_IP" strategyClass="com.lvmama.soa.monitor.dao.mybatis.sharding.DubboMethodDayIPShardStrategyImpl" />
+</shardingConfig>

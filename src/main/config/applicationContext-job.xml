@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- flush data from cache toDB START-->
+	<bean id="writeProviderAppCacheToDBJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="appMinuteCache" />
+		</property>
+		<property name="targetMethod">
+			<value>writeProviderAppCacheToDB</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="writeProviderAppCacheToDBJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="writeProviderAppCacheToDBJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 1 minute -->
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<!-- flush data from cache toDB END-->
+	
+	<!-- draw provider chart START-->
+	<bean id="appMinuteChartJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="appMinuteChartService" />
+		</property>
+		<property name="targetMethod">
+			<value>drawRecentChart</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="appMinuteChartJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="appMinuteChartJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 1 minute -->
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<!-- draw provider chart END-->
+	
+	<!-- flush data from cache toDB START-->
+	<bean id="writeMethodDayIPCacheToDBJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="methodDayIPCache" />
+		</property>
+		<property name="targetMethod">
+			<value>writeMethodDayIPCacheToDB</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="writeMethodDayIPCacheToDBJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="writeMethodDayIPCacheToDBJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 5 minute -->
+			<value>0 0/5 * * * ?</value>
+		</property>
+	</bean>
+	<!-- flush data from cache toDB END-->
+	
+	<!-- flush data from cache toDB START-->
+	<bean id="writeServiceDayIPCacheToDBJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="serviceDayIPCache" />
+		</property>
+		<property name="targetMethod">
+			<value>writeServiceDayIPCacheToDB</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="writeServiceDayIPCacheToDBJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="writeServiceDayIPCacheToDBJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 1 minute -->
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<!-- flush data from cache toDB END-->
+	
+	<bean id="dubboMethodDayIPMigrationJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dubboMethodDayIPMigrationJob" />
+		</property>
+		<property name="targetMethod">
+			<value>redisToMysql</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="dubboMethodDayIPMigrationJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboMethodDayIPMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every day -->
+			<value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="dubboServiceDayIPMigrationJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dubboServiceDayIPMigrationJob" />
+		</property>
+		<property name="targetMethod">
+			<value>redisToMysql</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="dubboServiceDayIPMigrationJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboServiceDayIPMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every day -->
+			<value>0 0 3 * * ?</value>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="writeProviderAppCacheToDBJobTrigger" />
+				<ref local="writeMethodDayIPCacheToDBJobTrigger" />
+				<ref local="writeServiceDayIPCacheToDBJobTrigger" />
+				<ref local="appMinuteChartJobTrigger" />
+				<ref local="dubboMethodDayIPMigrationJobTrigger" />
+				<ref local="dubboServiceDayIPMigrationJobTrigger" />
+		</list>
+		</property>
+		<property name="quartzProperties">
+			<props>
+			<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+			<prop key="org.quartz.threadPool.threadCount">5</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

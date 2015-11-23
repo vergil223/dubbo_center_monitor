@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DUBBO_APP_MINUTE">
+	<resultMap id="BaseResultMap"
+		type="com.lvmama.soa.monitor.entity.DubboAppMinute">
+		<id column="ID_" property="id_" />
+		<result column="APP_NAME" property="appName" />
+		<result column="TIME" property="time" />
+		<result column="SUCCESS_TIMES" property="successTimes" />
+		<result column="FAIL_TIMES" property="failTimes" />
+		<result column="ELAPSED_AVG" property="elapsedAvg" />
+		<result column="ELAPSED_MAX" property="elapsedMax" />
+	</resultMap>
+
+
+	<insert id="insert" parameterType="com.lvmama.soa.monitor.entity.DubboAppMinute">
+		INSERT INTO DUBBO_APP_MINUTE (
+	APP_NAME,
+	TIME,
+	SUCCESS_TIMES,
+	FAIL_TIMES,
+	ELAPSED_AVG,
+	ELAPSED_MAX
+) SELECT
+	#{appName},
+	#{time},
+	#{successTimes},
+	#{failTimes},
+	#{elapsedAvg},
+	#{elapsedMax}
+	from DUAL
+WHERE
+	NOT EXISTS (
+		SELECT
+			1
+		FROM
+			DUBBO_APP_MINUTE t
+		WHERE
+			t.APP_NAME = #{appName} AND t.TIME = #{time})
+	</insert>
+
+	<update id="append" parameterType="com.lvmama.soa.monitor.entity.DubboAppMinute">
+		UPDATE DUBBO_APP_MINUTE t
+		SET t.SUCCESS_TIMES = t.SUCCESS_TIMES + #{successTimes},
+		t.FAIL_TIMES=t.FAIL_TIMES+#{failTimes},
+		<if test="successTimes != null and successTimes>0" >
+		t.ELAPSED_AVG = (t.ELAPSED_AVG*t.SUCCESS_TIMES+#{elapsedAvg}*#{successTimes})/(t.SUCCESS_TIMES+#{successTimes}),
+		</if> 
+		t.ELAPSED_MAX=GREATEST(t.ELAPSED_MAX,#{elapsedMax})
+		where t.APP_NAME=#{appName} and t.TIME=#{time}
+	</update>
+	
+	<select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+	    select APP_NAME,TIME,SUCCESS_TIMES,FAIL_TIMES,ELAPSED_AVG,ELAPSED_MAX
+	    from DUBBO_APP_MINUTE t
+	    where 1=1 
+	    <if test="time_from != null" >
+	    	<![CDATA[
+	    	AND t.TIME >= #{time_from}
+	    	]]>
+	    </if>
+	    <if test="time_to != null" >
+	    	<![CDATA[
+	    	AND t.TIME <= #{time_to}
+	    	]]>
+	    </if>
+	    <if test="appName != null" >
+	    	AND t.APP_NAME = #{appName}
+	    </if>
+  	</select>
+  	
+  	<select id="getAppNames" resultType="java.lang.String" parameterType="java.util.Map">
+	    select DISTINCT t.APP_NAME from DUBBO_APP_MINUTE t
+  	</select>
+  	
+
+</mapper>

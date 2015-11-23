@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/task
+		   http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+           
+ 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+ 	
+ 	<context:annotation-config />
+ 	
+ 	<context:component-scan base-package="com.lvmama.soa.monitor"></context:component-scan>
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:test.properties</value>
+				<value>classpath:log4j.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<import resource="classpath*:applicationContext-dao.xml" />
+	<import resource="classpath*:applicationContext-database.xml" />
+	<import resource="classpath*:applicationContext-dubbo.xml" />
+	<import resource="classpath*:applicationContext-job.xml" />
+	<!-- <import resource="classpath*:applicationContext-springMVC.xml" /> -->
+	
+</beans>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DUBBO_METHOD_DAY_IP">
+	<resultMap id="BaseResultMap"
+		type="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		<id column="ID_" property="id_" />
+		<result column="APP_NAME" property="appName" />
+		<result column="SERVICE" property="service" />
+		<result column="METHOD" property="method" />
+		<result column="CONSUMER_IP" property="consumerIP" />
+		<result column="PROVIDER_IP" property="providerIP" />
+		<result column="TIME" property="time" />
+		<result column="SUCCESS_TIMES" property="successTimes" />
+		<result column="FAIL_TIMES" property="failTimes" />
+		<result column="ELAPSED_AVG" property="elapsedAvg" />
+		<result column="ELAPSED_MAX" property="elapsedMax" />
+		<result column="SUCCESS_TIMES_DETAIL" property="successTimesDetail" />
+		<result column="FAIL_TIMES_DETAIL" property="failTimesDetail" />
+		<result column="ELAPSED_TOTAL_DETAIL" property="elapsedTotalDetail" />
+		<result column="ELAPSED_MAX_DETAIL" property="elapsedMaxDetail" />
+	</resultMap>
+
+
+	<insert id="insert" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		INSERT INTO
+		${shardTableName} (
+		APP_NAME,
+		SERVICE,
+		METHOD,
+		CONSUMER_IP,
+		PROVIDER_IP,
+		TIME,
+		SUCCESS_TIMES,
+		FAIL_TIMES,
+		ELAPSED_AVG,
+		ELAPSED_MAX,
+		SUCCESS_TIMES_DETAIL,
+		FAIL_TIMES_DETAIL,
+		ELAPSED_TOTAL_DETAIL,
+		ELAPSED_MAX_DETAIL
+		) SELECT
+		#{appName},
+		#{service},
+		#{method},
+		#{consumerIP},
+		#{providerIP},
+		#{time},
+		#{successTimes},
+		#{failTimes},
+		#{elapsedAvg},
+		#{elapsedMax},
+		#{successTimesDetail},
+		#{failTimesDetail},
+		#{elapsedTotalDetail},
+		#{elapsedMaxDetail}
+		from DUAL
+		WHERE
+		NOT EXISTS (
+		SELECT
+		1
+		FROM
+		${shardTableName} t
+		WHERE
+		APP_NAME = #{appName}
+		AND SERVICE = #{service}
+		AND METHOD = #{method}
+		AND CONSUMER_IP = #{consumerIP}
+		AND PROVIDER_IP = #{providerIP}
+		AND TIME = #{time}
+		)
+	</insert>
+
+	<update id="append" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		UPDATE ${shardTableName} 
+		SET SUCCESS_TIMES = SUCCESS_TIMES +
+		#{successTimes},
+		FAIL_TIMES=FAIL_TIMES+#{failTimes},
+		<if test="successTimes != null and successTimes>0">
+			ELAPSED_AVG =
+			(ELAPSED_AVG*SUCCESS_TIMES+#{elapsedAvg}*#{successTimes})/(SUCCESS_TIMES+#{successTimes}),
+		</if>
+		ELAPSED_MAX=GREATEST(ELAPSED_MAX,#{elapsedMax}),
+		SUCCESS_TIMES_DETAIL=CONCAT(SUCCESS_TIMES_DETAIL,#{successTimesDetail}),
+		FAIL_TIMES_DETAIL=CONCAT(FAIL_TIMES_DETAIL,#{failTimesDetail}),
+		ELAPSED_TOTAL_DETAIL=CONCAT(ELAPSED_TOTAL_DETAIL,#{elapsedTotalDetail}),
+		ELAPSED_MAX_DETAIL=CONCAT(ELAPSED_MAX_DETAIL,#{elapsedMaxDetail})
+		where APP_NAME=#{appName}
+		AND SERVICE = #{service}
+		AND METHOD = #{method}
+		AND CONSUMER_IP = #{consumerIP}
+		AND PROVIDER_IP = #{providerIP}
+		AND TIME = #{time}
+	</update>
+	
+	<select id="findOne" resultMap="BaseResultMap" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		select
+		ID_,APP_NAME,SERVICE,METHOD,CONSUMER_IP,PROVIDER_IP,TIME,SUCCESS_TIMES,FAIL_TIMES,ELAPSED_AVG,ELAPSED_MAX,SUCCESS_TIMES_DETAIL,FAIL_TIMES_DETAIL,ELAPSED_TOTAL_DETAIL,ELAPSED_MAX_DETAIL
+		from ${shardTableName}
+		where 1=1
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+		<if test="service != null">
+			AND SERVICE = #{service}
+		</if>
+		<if test="method != null">
+			AND METHOD = #{method}
+		</if>
+		<if test="consumerIP != null">
+			AND CONSUMER_IP = #{consumerIP}
+		</if>
+		<if test="providerIP != null">
+			AND PROVIDER_IP = #{providerIP}
+		</if>
+		<if test="time != null">
+			AND TIME = #{time}
+		</if>
+	</select>
+	
+	<select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		ID_,APP_NAME,SERVICE,METHOD,CONSUMER_IP,PROVIDER_IP,TIME,SUCCESS_TIMES,FAIL_TIMES,ELAPSED_AVG,ELAPSED_MAX,SUCCESS_TIMES_DETAIL,FAIL_TIMES_DETAIL,ELAPSED_TOTAL_DETAIL,ELAPSED_MAX_DETAIL
+		from ${shardTableName}
+		where 1=1
+		<if test="time != null">
+	    	<![CDATA[
+	    	AND TIME = #{time}
+	    	]]>
+		</if>
+		<if test="time_from != null">
+	    	<![CDATA[
+	    	AND TIME >= #{time_from}
+	    	]]>
+		</if>
+		<if test="time_to != null">
+	    	<![CDATA[
+	    	AND TIME <= #{time_to}
+	    	]]>
+		</if>
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+		<if test="service != null">
+			AND SERVICE = #{service}
+		</if>
+		<if test="method != null">
+			AND METHOD = #{method}
+		</if>
+		<if test="consumerIP != null">
+			AND CONSUMER_IP = #{consumerIP}
+		</if>
+		<if test="providerIP != null">
+			AND PROVIDER_IP = #{providerIP}
+		</if>
+	</select>
+	
+	<update id="update" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		UPDATE ${shardTableName} 
+		SET SUCCESS_TIMES = #{successTimes},
+		FAIL_TIMES=#{failTimes},
+		ELAPSED_AVG =#{elapsedAvg},
+		ELAPSED_MAX=#{elapsedMax},
+		SUCCESS_TIMES_DETAIL=#{successTimesDetail},
+		FAIL_TIMES_DETAIL=#{failTimesDetail},
+		ELAPSED_TOTAL_DETAIL=#{elapsedTotalDetail},
+		ELAPSED_MAX_DETAIL=#{elapsedMaxDetail}
+		where APP_NAME=#{appName}
+		AND SERVICE = #{service}
+		AND METHOD = #{method}
+		AND CONSUMER_IP = #{consumerIP}
+		AND PROVIDER_IP = #{providerIP}
+		AND TIME = #{time}
+	</update>
+	
+	<select id="getMergedList" resultMap="BaseResultMap" parameterType="com.lvmama.soa.monitor.entity.DubboServiceDayIP">
+		select METHOD ,sum(SUCCESS_TIMES) SUCCESS_TIMES,sum(FAIL_TIMES) FAIL_TIMES,sum(SUCCESS_TIMES*ELAPSED_AVG)/sum(SUCCESS_TIMES) ELAPSED_AVG,max(ELAPSED_MAX) ELAPSED_MAX 
+		from ${shardTableName} 
+		where 1=1
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+		<if test="service != null">
+			AND SERVICE = #{service}
+		</if>
+		<if test="time != null">
+			AND TIME = #{time}
+		</if>
+		group by METHOD
+	</select>
+
+</mapper>

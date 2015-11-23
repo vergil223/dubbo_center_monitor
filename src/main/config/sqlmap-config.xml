@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<typeAliases></typeAliases>
+	
+	<!-- 
+	<plugins>
+		<plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin">
+			<property name="shardingConfig" value="mybatis_shard_config.xml" />
+		</plugin>
+	</plugins>
+ 	-->
+</configuration>

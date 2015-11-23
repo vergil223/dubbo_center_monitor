@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	
+	<dubbo:application name="${dubbo.application.name}"/>
+    <dubbo:registry protocol="${dubbo.registry.protocol}" address="${dubbo.registry.address}" check="false"/>
+    <dubbo:protocol name="dubbo" port="${dubbo.protocol.port}"/>
+    <dubbo:consumer check="false"/>
+	
+	<dubbo:service ref="lvSimpleDubboMonitor" interface="com.lvmama.soa.monitor.service.LvDubboMonitor" async="true"/>
+</beans>
