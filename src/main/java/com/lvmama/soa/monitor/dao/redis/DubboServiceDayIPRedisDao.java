@@ -11,6 +11,10 @@ import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 import com.lvmama.soa.monitor.entity.DubboServiceDayIP;
+import com.lvmama.soa.monitor.pub.mapreduce.MapReduce;
+import com.lvmama.soa.monitor.pub.mapreduce.redis.RedisGetMultiKeysCombiner;
+import com.lvmama.soa.monitor.pub.mapreduce.redis.RedisGetMultiKeysMapper;
+import com.lvmama.soa.monitor.pub.mapreduce.redis.RedisGetMultiKeysReducer;
 import com.lvmama.soa.monitor.util.Assert;
 import com.lvmama.soa.monitor.util.DateUtil;
 import com.lvmama.soa.monitor.util.PropertyUtil;
@@ -88,29 +92,47 @@ public class DubboServiceDayIPRedisDao {
 	
 	public List<DubboServiceDayIP> getMergedListByAppNameAndDay(String appName,
 			String yyyyMMDD){
+		//TODO multi threads
+//		String keyPattern=yyyyMMDD+"_"+"com.lvmama.soa.monitor.entity.DubboServiceDayIP_"+appName+"_*";
+//		Set<String> keys=jedisReaderTemplate.keys(keyPattern);
+//		
+//		Map<String,DubboServiceDayIP> map=new HashMap<String,DubboServiceDayIP>();
+//		for(String key:keys){
+//			DubboServiceDayIP day = jedisReaderTemplate.get(key, DubboServiceDayIP.class);
+//			
+//			DubboServiceDayIP mergedDay=map.get(day.getService());
+//			if(mergedDay==null){
+//				mergedDay=day;
+//			}else{
+//				mergedDay=DubboServiceDayIP.merge(day, mergedDay);
+//			}
+//			
+//			map.put(mergedDay.getService(), mergedDay);			
+//		}
+//		
+//		List<DubboServiceDayIP> resultList=new ArrayList<DubboServiceDayIP>();
+//		for(Entry<String,DubboServiceDayIP> entry:map.entrySet()){
+//			resultList.add(entry.getValue());
+//		}
+//		
+//		return resultList;
+		
+		MapReduce<String,String,String,DubboServiceDayIP,Map<String,DubboServiceDayIP>,List<DubboServiceDayIP>> mapReduce=new MapReduce<String,String,String,DubboServiceDayIP,Map<String,DubboServiceDayIP>,List<DubboServiceDayIP>>();
+		mapReduce.setMappers(RedisGetMultiKeysMapper.class,8);
+		mapReduce.setReducers(RedisGetMultiKeysReducer.class,2);
+		mapReduce.setCombiner(new RedisGetMultiKeysCombiner());
+		
+		JedisTemplate jedisReaderTemplate = JedisTemplate.getReaderInstance();
 		String keyPattern=yyyyMMDD+"_"+"com.lvmama.soa.monitor.entity.DubboServiceDayIP_"+appName+"_*";
 		Set<String> keys=jedisReaderTemplate.keys(keyPattern);
-		
-		Map<String,DubboServiceDayIP> map=new HashMap<String,DubboServiceDayIP>();
+		Map<String,String> inputs=new HashMap<String,String>();
 		for(String key:keys){
-			DubboServiceDayIP day = jedisReaderTemplate.get(key, DubboServiceDayIP.class);
-			
-			DubboServiceDayIP mergedDay=map.get(day.getService());
-			if(mergedDay==null){
-				mergedDay=day;
-			}else{
-				mergedDay=DubboServiceDayIP.merge(day, mergedDay);
-			}
-			
-			map.put(mergedDay.getService(), mergedDay);			
+			inputs.put(key, key);
 		}
+		mapReduce.setInputs(inputs);
 		
-		List<DubboServiceDayIP> resultList=new ArrayList<DubboServiceDayIP>();
-		for(Entry<String,DubboServiceDayIP> entry:map.entrySet()){
-			resultList.add(entry.getValue());
-		}
-		
-		return resultList;
+		List<DubboServiceDayIP> list =mapReduce.work();
+		return list;
 	}
 	
 	public Set<String> getKeysByDate(String yyyyMMDD){
