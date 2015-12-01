@@ -4,7 +4,7 @@
 
 <table border="1">
 <ul id="menu">
-  <li>List
+  <li>Statistics
     <ul>
       <li><a href="<%=request.getContextPath()%>/list/provider/service/service_day_list.do">Service</a></li>
       <li><a href="<%=request.getContextPath()%>/list/provider/method/method_day_list.do">Method</a></li>

@@ -172,7 +172,7 @@
 		AND TIME = #{time}
 	</update>
 	
-	<select id="getMergedList" resultMap="BaseResultMap" parameterType="com.lvmama.soa.monitor.entity.DubboServiceDayIP">
+	<select id="getMergedList" resultMap="BaseResultMap" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
 		select METHOD ,sum(SUCCESS_TIMES) SUCCESS_TIMES,sum(FAIL_TIMES) FAIL_TIMES,sum(SUCCESS_TIMES*ELAPSED_AVG)/sum(SUCCESS_TIMES) ELAPSED_AVG,max(ELAPSED_MAX) ELAPSED_MAX 
 		from ${shardTableName} 
 		where 1=1
@@ -187,5 +187,24 @@
 		</if>
 		group by METHOD
 	</select>
+	
+	<select id="selectByMethod" resultMap="BaseResultMap" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		select * 
+		from ${shardTableName} 
+		where 1=1
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+		<if test="service != null">
+			AND SERVICE = #{service}
+		</if>
+		<if test="method != null">
+			AND METHOD = #{method}
+		</if>
+		<if test="time != null">
+			AND TIME = #{time}
+		</if>
+	</select>
+	
 
 </mapper>

@@ -14,6 +14,7 @@ import com.lvmama.soa.monitor.entity.DubboMethodDayIP;
 import com.lvmama.soa.monitor.util.Assert;
 import com.lvmama.soa.monitor.util.DateUtil;
 import com.lvmama.soa.monitor.util.PropertyUtil;
+import com.lvmama.soa.monitor.util.StringUtil;
 
 @Repository("dubboMethodDayIPRedisDao")
 public class DubboMethodDayIPRedisDao {
@@ -94,7 +95,7 @@ public class DubboMethodDayIPRedisDao {
 			if(mergedDay==null){
 				mergedDay=day;
 			}else{
-				mergedDay=DubboMethodDayIP.merge(day, mergedDay);
+				mergedDay=DubboMethodDayIP.merge(day, mergedDay,false);
 			}
 			
 			map.put(mergedDay.getMethod(), mergedDay);			
@@ -114,7 +115,11 @@ public class DubboMethodDayIPRedisDao {
 		Assert.notEmpty(params.get("method"), "method");
 		Assert.notEmpty(params.get("time"), "time");
 		
-		String keyPattern=DateUtil.yyyyMMdd((Date)params.get("time"))+"_"+"com.lvmama.soa.monitor.entity.DubboMethodDayIP_"+params.get("appName").toString()+"_"+params.get("service").toString()+"_"+params.get("method").toString()+"_*";
+		String providerIP=params.get("providerIP")==null?"*":params.get("providerIP").toString();
+		String consumerIP=params.get("consumerIP")==null?"*":params.get("consumerIP").toString();
+		
+		String keyPattern=DateUtil.yyyyMMdd((Date)params.get("time"))+"_"+"com.lvmama.soa.monitor.entity.DubboMethodDayIP_"+params.get("appName").toString()+"_"+params.get("service").toString()+"_"+params.get("method").toString()+"_"+consumerIP+"_"+providerIP+"_*";
+		
 		Set<String> keys=jedisReaderTemplate.keys(keyPattern);
 		
 		List<DubboMethodDayIP> resultList=new ArrayList<DubboMethodDayIP>();
@@ -126,4 +131,24 @@ public class DubboMethodDayIPRedisDao {
 		
 		return resultList;
 	}
+	
+	public List<DubboMethodDayIP> selectByMethod(String appName,String serviceName,String method,String yyyyMMdd){
+		Assert.notEmpty(appName, "appName");
+		Assert.notEmpty(serviceName, "service");
+		Assert.notEmpty(method, "method");
+		Assert.notEmpty(yyyyMMdd, "time");
+		
+		String keyPattern=yyyyMMdd+"_"+"com.lvmama.soa.monitor.entity.DubboMethodDayIP_"+appName+"_"+serviceName+"_"+method+"_*";
+		Set<String> keys=jedisReaderTemplate.keys(keyPattern);
+		
+		List<DubboMethodDayIP> resultList=new ArrayList<DubboMethodDayIP>();
+		for(String key:keys){
+			DubboMethodDayIP day = jedisReaderTemplate.get(key, DubboMethodDayIP.class);
+			
+			resultList.add(day);
+		}
+		
+		return resultList;
+	}
+	
 }

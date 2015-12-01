@@ -23,7 +23,7 @@ public class RedisGetMultiKeysCombiner implements Combiner<Map<String,DubboServi
 					resultMap.put(service, day);
 				}else{
 					DubboServiceDayIP oldDay=resultMap.get(service);
-					resultMap.put(service, DubboServiceDayIP.merge(day, oldDay));
+					resultMap.put(service, DubboServiceDayIP.merge(day, oldDay,false));
 				}
 			}
 		}

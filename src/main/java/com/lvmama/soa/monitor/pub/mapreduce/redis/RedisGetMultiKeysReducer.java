@@ -21,7 +21,7 @@ public class RedisGetMultiKeysReducer implements Reducer<String,DubboServiceDayI
 		if(mergedDay==null){
 			reduceResult.put(service, day);
 		}else{
-			mergedDay=DubboServiceDayIP.merge(day, mergedDay);
+			mergedDay=DubboServiceDayIP.merge(day, mergedDay,false);
 			reduceResult.put(service, mergedDay);
 		}
 	}

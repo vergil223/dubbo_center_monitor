@@ -141,6 +141,10 @@ public class DubboServiceDayIP implements Shardable{
 	}
 	
 	public static DubboServiceDayIP merge(DubboServiceDayIP newDay, DubboServiceDayIP oldDay) {
+		return merge(newDay,oldDay,true);
+	}
+	
+	public static DubboServiceDayIP merge(DubboServiceDayIP newDay, DubboServiceDayIP oldDay,boolean needMergeDetail) {
 		if(oldDay.getSuccessTimes()>0||newDay.getSuccessTimes()>0){
 			oldDay.setElapsedAvg((oldDay.getSuccessTimes() * oldDay.getElapsedAvg() + newDay
 					.getSuccessTimes() * newDay.getElapsedAvg())
@@ -150,16 +154,19 @@ public class DubboServiceDayIP implements Shardable{
 		oldDay.setFailTimes(oldDay.getFailTimes() + newDay.getFailTimes());
 		oldDay.setElapsedMax(Math.max(oldDay.getElapsedMax(),
 				newDay.getElapsedMax()));
-		oldDay.setSuccessTimesDetail(DubboDetailUtil.mergeDetailToStr(
-				oldDay.getSuccessTimesDetail(), newDay.getSuccessTimesDetail(),
-				false));
-		oldDay.setFailTimesDetail(DubboDetailUtil.mergeDetailToStr(oldDay.getFailTimesDetail(),
-				newDay.getFailTimesDetail(), false));
-		oldDay.setElapsedTotalDetail(DubboDetailUtil.mergeDetailToStr(
-				oldDay.getElapsedTotalDetail(), newDay.getElapsedTotalDetail(),
-				false));
-		oldDay.setElapsedMaxDetail(DubboDetailUtil.mergeDetailToStr(oldDay.getElapsedMaxDetail(),
-				newDay.getElapsedMaxDetail(), true));
+		
+		if(needMergeDetail){
+			oldDay.setSuccessTimesDetail(DubboDetailUtil.mergeDetailToStr(
+					oldDay.getSuccessTimesDetail(), newDay.getSuccessTimesDetail(),
+					false));
+			oldDay.setFailTimesDetail(DubboDetailUtil.mergeDetailToStr(oldDay.getFailTimesDetail(),
+					newDay.getFailTimesDetail(), false));
+			oldDay.setElapsedTotalDetail(DubboDetailUtil.mergeDetailToStr(
+					oldDay.getElapsedTotalDetail(), newDay.getElapsedTotalDetail(),
+					false));
+			oldDay.setElapsedMaxDetail(DubboDetailUtil.mergeDetailToStr(oldDay.getElapsedMaxDetail(),
+					newDay.getElapsedMaxDetail(), true));
+		}
 		
 		return oldDay;
 	}

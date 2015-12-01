@@ -122,5 +122,15 @@ public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 		}
 	}
 
+	@Override
+	public List<DubboMethodDayIP> selectByMethod(String appName,
+			String serviceName, String method, String yyyyMMdd) {
+		if(DataSourceUtil.canReadFromRedis(DubboMethodDayIP.class, yyyyMMdd)){
+			return dubboMethodDayIPRedisDao.selectByMethod(appName,serviceName,method,yyyyMMdd);
+		}else{
+			return dubboMethodDayIPDao.selectByMethod(appName,serviceName,method,yyyyMMdd);
+		}
+	}
+
 	
 }

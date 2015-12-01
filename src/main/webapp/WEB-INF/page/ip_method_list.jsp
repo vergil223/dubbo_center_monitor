@@ -5,21 +5,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Method Statistics</title>
+<title>Method IP Statistics</title>
 </head>
 <%@ include  file="head.jsp"%>
 <%@ include  file="menu.jsp"%>
 <%
 String appName=(String)request.getAttribute("appName"); 
-String service=(String)request.getAttribute("service"); 
+String service=(String)request.getAttribute("service");
+String method=(String)request.getAttribute("method");
 java.util.List<String> appNames=(java.util.List)request.getAttribute("appNames");
 
-java.util.List<DubboMethodDayIP> methodDayList=(java.util.List)request.getAttribute("methodDayList");
+java.util.List<DubboMethodDayIP> methodDayList=(java.util.List)request.getAttribute("ipList");
 String dayStr=request.getAttribute("dayStr")==null?"":(String)request.getAttribute("dayStr");
 %>
 
 <body>
-<form name="form1" action="<%=request.getContextPath()%>/list/provider/method/method_day_list.do">
+<form name="form1" action="<%=request.getContextPath()%>/list/provider/ip/ip_method_list.do">
 
 application name:
 <select name="appName">
@@ -34,6 +35,7 @@ for(String a:appNames){
 <%}%>
 </select>
 Service: <input type="text" name="service" value="<%=service %>">
+Method: <input type="text" name="method" value="<%=method %>">
 Day: <input type="text" id="dayStr" name="dayStr" value="<%=dayStr %>">
 <input type="submit" value="提交"/>
 
@@ -45,6 +47,8 @@ Day: <input type="text" id="dayStr" name="dayStr" value="<%=dayStr %>">
 		<th>Application</th>
 		<th>Service</th>
 		<th>Method</th>
+		<th>Provider</th>
+		<th>Consumer</th>
 		<th>Success Times</th>
 		<th>Fail times</th>
 		<th>Elapsed Average(ms)</th>
@@ -56,13 +60,14 @@ Day: <input type="text" id="dayStr" name="dayStr" value="<%=dayStr %>">
 		<td><%=appName %></td>
 		<td><%=service %></td>
 		<td><%=methodDay.getMethod() %></td>
+		<td><%=methodDay.getProviderIP() %></td>
+		<td><%=methodDay.getConsumerIP() %></td>
 		<td><%=methodDay.getSuccessTimes() %></td>
 		<td><%=methodDay.getFailTimes() %></td>
 		<td><%=methodDay.getElapsedAvg() %></td>
 		<td><%=methodDay.getElapsedMax() %></td>
 		<td>
-			<a href="<%=request.getContextPath()%>/list/provider/ip/ip_method_list.do?appName=<%=appName %>&service=<%=service %>&method=<%=methodDay.getMethod() %>&dayStr=<%=dayStr %>">IP</a>
-			<a href="<%=request.getContextPath()%>/chart/provider/method/home.do?appName=<%=appName %>&service=<%=service %>&method=<%=methodDay.getMethod() %>&dayStr=<%=dayStr %>">Chart</a>			
+			<a href="<%=request.getContextPath()%>/chart/provider/methodIP/home.do?appName=<%=appName %>&service=<%=service %>&method=<%=methodDay.getMethod() %>&providerIP=<%=methodDay.getProviderIP() %>&consumerIP=<%=methodDay.getConsumerIP() %>&dayStr=<%=dayStr %>">Chart</a>
 		</td>
 	</tr>
 <%}%>

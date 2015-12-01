@@ -56,6 +56,25 @@ public class DubboMethodDayIPServiceTest extends BaseTest{
 		System.out.println("------------------------------");
 	}
 	
+	@Test
+	public void testSelectByMethod(){
+		List<DubboMethodDayIP> listRedis=dubboMethodDayIPService.selectByMethod("pet_public", "com.lvmama.comm.bee.service.sync.SyncBaseService","findTriggerPageListWithTime", "20151201");
+		
+		List<DubboMethodDayIP> listMySql=dubboMethodDayIPService.selectByMethod("pet_public", "com.lvmama.comm.bee.service.sync.SyncBaseService","findSyncTemplateById", "20151118");
+		
+		System.out.println("---------------Redis---------------");
+		for(DubboMethodDayIP day:listRedis){
+			System.out.println(day);
+		}
+		System.out.println("------------------------------");
+		
+		System.out.println("-------------Mysql-----------------");
+		for(DubboMethodDayIP day:listMySql){
+			System.out.println(day);
+		}
+		System.out.println("------------------------------");
+	}
+	
 	private class testInsertOrAppendRunnable implements Runnable{
 		CountDownLatch startLatch;
 		CountDownLatch endLatch;
@@ -100,6 +119,7 @@ public class DubboMethodDayIPServiceTest extends BaseTest{
 			dubboMethodDayIPService.insertOrAppend(day);			
 		}
 	}
+	
 	
 	
 }

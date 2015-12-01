@@ -1,7 +1,9 @@
 package com.lvmama.soa.monitor.dao.mybatis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -83,5 +85,19 @@ public class DubboMethodDayIPDao extends BaseDao{
 		sql.append("   UNIQUE KEY `IDX_"+tableName+"_1` (`APP_NAME`,`SERVICE`,`METHOD`,`PROVIDER_IP`,`CONSUMER_IP`,`TIME`) USING BTREE      ");
 		sql.append(" ) ENGINE=MyISAM DEFAULT CHARSET=utf8;                                                                ");
 		return sql.toString();
+	}
+	
+	public List<DubboMethodDayIP> selectByMethod(String appName,String serviceName,String method,String yyyyMMdd){
+		Assert.notEmpty(appName, "appName");
+		Assert.notEmpty(serviceName, "service");
+		Assert.notEmpty(method, "method");
+		Assert.notEmpty(yyyyMMdd, "time");
+		
+		DubboMethodDayIP dayParam=new DubboMethodDayIP();
+		dayParam.setAppName(appName);
+		dayParam.setService(serviceName);
+		dayParam.setMethod(method);
+		dayParam.setTime(DateUtil.parseDateYYYYMMdd(yyyyMMdd));
+		return this.getList("DUBBO_METHOD_DAY_IP.selectByMethod", dayParam);
 	}
 }

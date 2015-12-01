@@ -119,7 +119,7 @@ public class DubboServiceDayIPRedisDao {
 		
 		MapReduce<String,String,String,DubboServiceDayIP,Map<String,DubboServiceDayIP>,List<DubboServiceDayIP>> mapReduce=new MapReduce<String,String,String,DubboServiceDayIP,Map<String,DubboServiceDayIP>,List<DubboServiceDayIP>>();
 		mapReduce.setMappers(RedisGetMultiKeysMapper.class,8);
-		mapReduce.setReducers(RedisGetMultiKeysReducer.class,2);
+		mapReduce.setReducers(RedisGetMultiKeysReducer.class,1);
 		mapReduce.setCombiner(new RedisGetMultiKeysCombiner());
 		
 		JedisTemplate jedisReaderTemplate = JedisTemplate.getReaderInstance();

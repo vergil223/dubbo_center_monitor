@@ -26,7 +26,7 @@ public class RedisGetMultiKeysMapper implements Mapper<String,String,String,Dubb
 				if(mergedDay==null){
 					mergedDay=day;
 				}else{
-					mergedDay=DubboServiceDayIP.merge(day, mergedDay);
+					mergedDay=DubboServiceDayIP.merge(day, mergedDay,false);
 				}
 				
 				mapResult.put(mergedDay.getService(), mergedDay);							

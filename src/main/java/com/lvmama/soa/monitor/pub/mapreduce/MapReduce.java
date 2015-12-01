@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.lvmama.soa.monitor.util.DateUtil;
+
 public class MapReduce<IK,IV,RK,RV,RR,FR> {
 	private Log log=LogFactory.getLog(MapReduce.class);
 	
@@ -22,6 +24,8 @@ public class MapReduce<IK,IV,RK,RV,RR,FR> {
 	
 	public FR work(){
 		try{
+			log.info("MapReduce.work() START。 Number of mappers:"+mappers.size()+", number of reducers:"+reducers.size());
+			long start=DateUtil.now().getTime();
 			//1. map
 			ExecutorService mapExec=Executors.newFixedThreadPool(mappers.size());
 			
@@ -43,6 +47,8 @@ public class MapReduce<IK,IV,RK,RV,RR,FR> {
 				mapResultList.add(mapper.getMapResult());
 			}
 			
+			log.info("map end, cost:"+(DateUtil.now().getTime()-start)+"ms");
+			start=DateUtil.now().getTime();
 			//2. reduce
 			ExecutorService reduceExec=Executors.newFixedThreadPool(reducers.size());
 			
@@ -66,8 +72,14 @@ public class MapReduce<IK,IV,RK,RV,RR,FR> {
 				reduceResult.add(reducer.getReduceResult());
 			}
 			
+			log.info("reduce end, cost:"+(DateUtil.now().getTime()-start)+"ms");
+			start=DateUtil.now().getTime();
+			
 			//3. combine
-			return combiner.combine(reduceResult);
+			FR finalResult = combiner.combine(reduceResult);
+			log.info("combine end, cost:"+(DateUtil.now().getTime()-start)+"ms");
+			
+			return finalResult;
 		}catch(Exception e){
 			log.error("MapReduce.work() error",e);
 			return null;

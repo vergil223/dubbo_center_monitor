@@ -13,4 +13,6 @@ public interface DubboMethodDayIPService {
 	public void migrateFromRedisToMysql(String yyyyMMDD);
 	
 	public List<DubboMethodDayIP> selectList(Map<String,Object> params);
+	
+	public List<DubboMethodDayIP> selectByMethod(String appName,String serviceName,String method,String yyyyMMdd);
 }
