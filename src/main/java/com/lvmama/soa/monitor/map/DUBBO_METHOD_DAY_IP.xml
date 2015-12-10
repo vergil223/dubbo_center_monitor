@@ -127,6 +127,7 @@
 	    	AND TIME = #{time}
 	    	]]>
 		</if>
+		<!-- 分钟级别的过滤不在sql中做
 		<if test="time_from != null">
 	    	<![CDATA[
 	    	AND TIME >= #{time_from}
@@ -137,6 +138,7 @@
 	    	AND TIME <= #{time_to}
 	    	]]>
 		</if>
+		 -->
 		<if test="appName != null">
 			AND APP_NAME = #{appName}
 		</if>
@@ -205,6 +207,18 @@
 			AND TIME = #{time}
 		</if>
 	</select>
+	
+	<delete id="delete" parameterType="com.lvmama.soa.monitor.entity.DubboMethodDayIP">
+		delete 
+		from ${shardTableName} 
+		where 1=1
+		<if test="time != null">
+			AND TIME = #{time}
+		</if>
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+	</delete>
 	
 
 </mapper>

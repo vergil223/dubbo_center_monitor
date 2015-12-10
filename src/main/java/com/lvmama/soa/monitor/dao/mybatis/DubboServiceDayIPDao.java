@@ -6,9 +6,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.lvmama.soa.monitor.entity.DubboMethodDayIP;
 import com.lvmama.soa.monitor.entity.DubboServiceDayIP;
 import com.lvmama.soa.monitor.util.Assert;
 import com.lvmama.soa.monitor.util.DateUtil;
+import com.lvmama.soa.monitor.util.StringUtil;
 
 @Repository("dubboServiceDayIPDao")
 public class DubboServiceDayIPDao extends BaseDao{
@@ -72,8 +74,16 @@ public class DubboServiceDayIPDao extends BaseDao{
 		sql.append("   `ELAPSED_TOTAL_DETAIL` text,                                                                       ");
 		sql.append("   `ELAPSED_MAX_DETAIL` text,                                                                         ");
 		sql.append("   PRIMARY KEY (`ID_`),                                                                               ");
-		sql.append("   UNIQUE KEY `IDX_"+tableName+"_1` (`APP_NAME`,`SERVICE`,`PROVIDER_IP`,`CONSUMER_IP`,`TIME`) USING BTREE      ");
+		sql.append("   UNIQUE KEY `IDX_"+tableName+"_1` (`APP_NAME`,`SERVICE`,`PROVIDER_IP`,`CONSUMER_IP`,`TIME`) USING BTREE, ");
+		sql.append("   KEY `IDX_"+tableName+"_2` (`TIME`,`APP_NAME`,`SERVICE`) USING BTREE     ");
 		sql.append(" ) ENGINE=MyISAM DEFAULT CHARSET=utf8;                                                                ");
 		return sql.toString();
+	}
+	
+	public int delete(DubboServiceDayIP day){
+		if(day==null||StringUtil.isEmpty(day.getAppName())||day.getTime()==null){
+			return 0;
+		}
+		return this.delete("DUBBO_SERVICE_DAY_IP.delete", day);
 	}
 }

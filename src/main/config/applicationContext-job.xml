@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<!-- flush data from cache toDB START-->
+	<!-- flush app from cache toDB START-->
 	<bean id="writeProviderAppCacheToDBJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -24,7 +24,7 @@
 			<value>0 0/1 * * * ?</value>
 		</property>
 	</bean>
-	<!-- flush data from cache toDB END-->
+	<!-- flush app from cache toDB END-->
 	
 	<!-- draw provider chart START-->
 	<bean id="appMinuteChartJobFactory"
@@ -50,7 +50,7 @@
 	</bean>
 	<!-- draw provider chart END-->
 	
-	<!-- flush data from cache toDB START-->
+	<!-- flush method day ip from cache toDB START-->
 	<bean id="writeMethodDayIPCacheToDBJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -72,9 +72,9 @@
 			<value>0 0/5 * * * ?</value>
 		</property>
 	</bean>
-	<!-- flush data from cache toDB END-->
+	<!-- flush method day ip from cache toDB END-->
 	
-	<!-- flush data from cache toDB START-->
+	<!-- flush service day ip from cache to DB START-->
 	<bean id="writeServiceDayIPCacheToDBJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -96,8 +96,9 @@
 			<value>0 0/1 * * * ?</value>
 		</property>
 	</bean>
-	<!-- flush data from cache toDB END-->
+	<!-- flush service day ip from cache to DB END-->
 	
+	<!-- migrate DUBBO_METHOD_DAY_IP START -->
 	<bean id="dubboMethodDayIPMigrationJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -115,11 +116,22 @@
 			<ref bean="dubboMethodDayIPMigrationJobFactory" />
 		</property>
 		<property name="cronExpression">
-			<!-- run every day -->
+			<!-- run every day at 2:00-->
 			<value>0 0 2 * * ?</value>
 		</property>
 	</bean>
+	<bean id="dubboMethodDayIPMigrationJobTriggerToday" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboMethodDayIPMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every day -->
+			<value>0 0 0/6 * * ?</value>
+		</property>
+	</bean>
+	<!-- migrate DUBBO_METHOD_DAY_IP END -->
 	
+	<!-- migrate DUBBO_SERVICE_DAY_IP START -->
 	<bean id="dubboServiceDayIPMigrationJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -137,10 +149,20 @@
 			<ref bean="dubboServiceDayIPMigrationJobFactory" />
 		</property>
 		<property name="cronExpression">
-			<!-- run every day -->
+			<!-- run every day at 3:00-->
 			<value>0 0 3 * * ?</value>
 		</property>
 	</bean>
+	<bean id="dubboServiceDayIPMigrationJobTriggerToday" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboServiceDayIPMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 6 hours -->
+			<value>0 0 0/6 * * ?</value>
+		</property>
+	</bean>
+	<!-- migrate DUBBO_SERVICE_DAY_IP END -->
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -151,6 +173,8 @@
 				<ref local="appMinuteChartJobTrigger" />
 				<ref local="dubboMethodDayIPMigrationJobTrigger" />
 				<ref local="dubboServiceDayIPMigrationJobTrigger" />
+				<ref local="dubboMethodDayIPMigrationJobTriggerToday" />
+				<ref local="dubboServiceDayIPMigrationJobTriggerToday" />
 		</list>
 		</property>
 		<property name="quartzProperties">

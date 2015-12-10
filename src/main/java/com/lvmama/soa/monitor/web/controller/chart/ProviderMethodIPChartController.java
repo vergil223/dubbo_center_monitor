@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.lvmama.soa.monitor.entity.DubboMethodDayIP;
 import com.lvmama.soa.monitor.service.DubboAppMinuteService;
 import com.lvmama.soa.monitor.service.chart.MethodIPMinuteChartService;
 import com.lvmama.soa.monitor.util.ChartUtil;
@@ -131,6 +132,10 @@ public class ProviderMethodIPChartController {
 		param.put("method", method);
 		param.put("providerIP", providerIP);
 		param.put("consumerIP", consumerIP);
+		
+		DubboMethodDayIP dubboMethodDayIP=new DubboMethodDayIP();
+		dubboMethodDayIP.setAppName(appName);
+		param.put("shardTableName", dubboMethodDayIP.getShardTableName());
 		
 		Date day = DateUtil.now();
 		if (!StringUtil.isEmpty(dayStr) && !StringUtil.isNullStr(dayStr)) {

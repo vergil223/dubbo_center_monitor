@@ -1,6 +1,7 @@
 package com.lvmama.soa.monitor.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,11 +103,18 @@ public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 	@Override
 	public void migrateFromRedisToMysql(String yyyyMMDD){
 		Set<String> keys=dubboMethodDayIPRedisDao.getKeysByDate(yyyyMMDD);
+		
+		Set<String> deleteApps=new HashSet<String>();
 		for(String key:keys){
 			try{
 				DubboMethodDayIP day =dubboMethodDayIPRedisDao.getByKey(key);
+				if(!deleteApps.contains(day.getAppName())){
+					//remove existing data of the same day before insert the latest data
+					int deletedNum=dubboMethodDayIPDao.delete(day);
+					log.info("removed "+deletedNum+" records in "+day.getShardTableName());
+					deleteApps.add(day.getAppName());
+				}
 				dubboMethodDayIPDao.insert(day);		
-//				dubboMethodDayIPRedisDao.deleteByKey(key);
 			}catch(Exception e){
 				log.error("migrateFromRedisToMysql error. key="+key, e);
 			}

@@ -175,5 +175,17 @@
 		</if>
 		group by SERVICE
 	</select>
+	
+	<delete id="delete"  parameterType="com.lvmama.soa.monitor.entity.DubboServiceDayIP">
+		delete 
+		from ${shardTableName} 
+		where 1=1
+		<if test="time != null">
+			AND TIME = #{time}
+		</if>
+		<if test="appName != null">
+			AND APP_NAME = #{appName}
+		</if>
+	</delete>
 
 </mapper>

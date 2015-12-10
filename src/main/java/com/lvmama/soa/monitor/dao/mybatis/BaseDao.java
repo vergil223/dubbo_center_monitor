@@ -63,6 +63,13 @@ public class BaseDao {
 			return null;
 		}
 	}
+	
+	protected int delete(String key, Object object) {
+		if (object != null) {
+			return getSqlSession().delete(key, object);
+		}
+		return 0;
+	}
 	//
 	// protected int insertFromOtherTable(String key, Map<String, Object>
 	// paramMap) {
@@ -81,12 +88,6 @@ public class BaseDao {
 	// return 0;
 	// }
 	//
-	// protected int delete(String key, Object object) {
-	// if (object != null) {
-	// return getSqlSession().delete(createStatementName(key), object);
-	// }
-	// return 0;
-	// }
 	//
 	// protected int deleteAll(String key, Map<String, Object> paramMap) {
 	// if (paramMap != null) {

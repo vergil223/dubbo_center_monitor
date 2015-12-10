@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.lvmama.soa.monitor.dao.mybatis.DubboMethodDayIPDao;
 import com.lvmama.soa.monitor.entity.DubboMethodDayIP;
 import com.lvmama.soa.monitor.service.DubboMethodDayIPService;
 import com.lvmama.soa.monitor.util.DateUtil;
@@ -21,7 +22,10 @@ import com.lvmama.soa.monitor.util.StringUtil;
 @ContextConfiguration({ "classpath*:applicationContext-test.xml" })
 public class DubboMethodDayIPServiceTest extends BaseTest{
 	@Autowired
-	DubboMethodDayIPService dubboMethodDayIPService;
+	private DubboMethodDayIPService dubboMethodDayIPService;
+	
+	@Autowired
+	private DubboMethodDayIPDao dubboMethodDayIPDao;
 	
 	@Test
 	public void testInsertOrAppend(){
@@ -116,7 +120,8 @@ public class DubboMethodDayIPServiceTest extends BaseTest{
 				+ day.getElapsedMax()+StringUtil.getLineSeparator());
 		
 		for(int i=1;i<=10;i++){
-			dubboMethodDayIPService.insertOrAppend(day);			
+			dubboMethodDayIPService.insertOrAppend(day);
+			dubboMethodDayIPDao.insert(day);
 		}
 	}
 	

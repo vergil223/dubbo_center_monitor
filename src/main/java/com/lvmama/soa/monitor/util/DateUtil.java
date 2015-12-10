@@ -57,6 +57,13 @@ public class DateUtil {
 		return now.getTime();
 	}
 	
+	public static Date minutesBefore(Date date,int minutes){
+		Calendar c=Calendar.getInstance();
+		c.setTime(date);
+		c.set(Calendar.MINUTE, c.get(Calendar.MINUTE)-minutes);
+		return c.getTime();
+	}
+	
 	public static Date trimToMin(Date date){
 		if(date==null){
 			return null;
@@ -93,6 +100,10 @@ public class DateUtil {
 		return new SimpleDateFormat("yyyyMMdd").format(date);
 	}
 	
+	public static String yyyyMMddHHmmss(Date date){
+		return new SimpleDateFormat("yyyyMMddHHmmss").format(date);
+	}
+	
 	public static Date changeHHmm(Date date,String HHmm){
 		if(HHmm==null||HHmm.length()!=4){
 			throw new IllegalArgumentException("argument is invalid:["+HHmm+"]");
@@ -111,13 +122,15 @@ public class DateUtil {
 	public static void main(String args[])throws Exception{
 		Date d=new Date();
 		System.out.println(d);
-		System.out.println("trimToMin:"+DateUtil.trimToMin(d));
-		System.out.println("trimToDay:"+DateUtil.trimToDay(d));
-		System.out.println(HHmm(d));
-		System.out.println(yyyyMMdd(d));
-		System.out.println(new Date(0L));
-		System.out.println(changeHHmm(d,"1524"));
-		System.out.println(daysBefore(365));
-		System.out.println(getYesterdayYMD());
+//		System.out.println("trimToMin:"+DateUtil.trimToMin(d));
+//		System.out.println("trimToDay:"+DateUtil.trimToDay(d));
+//		System.out.println(HHmm(d));
+//		System.out.println(yyyyMMdd(d));
+//		System.out.println(new Date(0L));
+//		System.out.println(changeHHmm(d,"1524"));
+//		System.out.println(daysBefore(365));
+//		System.out.println(getYesterdayYMD());
+//		System.out.println(minutesBefore(d,12));
+		System.out.println(yyyyMMddHHmmss(d));
 	}
 }

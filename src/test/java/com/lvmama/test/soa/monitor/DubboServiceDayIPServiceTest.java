@@ -1,5 +1,6 @@
 package com.lvmama.test.soa.monitor;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.lvmama.soa.monitor.dao.mybatis.DubboServiceDayIPDao;
 import com.lvmama.soa.monitor.entity.DubboServiceDayIP;
 import com.lvmama.soa.monitor.service.DubboServiceDayIPService;
 import com.lvmama.soa.monitor.util.DateUtil;
@@ -19,6 +21,17 @@ import com.lvmama.soa.monitor.util.DateUtil;
 public class DubboServiceDayIPServiceTest extends BaseTest {
 	@Autowired
 	private DubboServiceDayIPService dubboServiceDayIPService;
+	
+	@Autowired
+	private DubboServiceDayIPDao dubboServiceDayIPDao;
+	
+	@Test
+	public void testInsert(){
+		DubboServiceDayIP day=new DubboServiceDayIP("LZY20151208",
+				"DubboServiceDayIPServiceTest", "1.1.1.1", "2.2.2.2", DateUtil.trimToDay(DateUtil.now()));
+		
+		dubboServiceDayIPDao.insert(day);
+	}
 	
 	@Test
 	public void testSelectByAppNameAndDay(){

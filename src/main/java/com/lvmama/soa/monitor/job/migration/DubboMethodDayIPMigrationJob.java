@@ -29,4 +29,19 @@ public class DubboMethodDayIPMigrationJob {
 		long cost = DateUtil.now().getTime()-start;
 		log.info("DubboMethodDayIPMigrationJob.redisToMysql() END. costs:"+cost+"ms");
 	}
+	
+	/**
+	 * To migrate the data of the day this job run
+	 * 
+	 */
+	public void redisToMysqlToday(){
+		log.info("DubboMethodDayIPMigrationJob.redisToMysql() START");
+		long start=DateUtil.now().getTime();
+		
+		String yyyyMMDD=DateUtil.getTodayYMD();
+		dubboMethodDayIPService.migrateFromRedisToMysql(yyyyMMDD);
+		
+		long cost = DateUtil.now().getTime()-start;
+		log.info("DubboMethodDayIPMigrationJob.redisToMysql() END. costs:"+cost+"ms");
+	}
 }

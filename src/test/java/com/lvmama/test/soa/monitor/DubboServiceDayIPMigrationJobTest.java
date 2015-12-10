@@ -15,7 +15,12 @@ public class DubboServiceDayIPMigrationJobTest extends BaseTest{
 	private DubboServiceDayIPMigrationJob dubboServiceDayIPMigrationJob;
 	
 	@Test
-	public void testMigrate(){
+	public void testMigrateYesterday(){
 		dubboServiceDayIPMigrationJob.redisToMysql();
+	}
+	
+	@Test
+	public void testMigrateToday(){
+		dubboServiceDayIPMigrationJob.redisToMysqlToday();
 	}
 }
