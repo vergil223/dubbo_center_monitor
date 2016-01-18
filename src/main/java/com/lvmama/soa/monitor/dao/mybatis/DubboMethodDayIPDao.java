@@ -107,6 +107,7 @@ public class DubboMethodDayIPDao extends BaseDao{
 		if(day==null||StringUtil.isEmpty(day.getAppName())||day.getTime()==null){
 			return 0;
 		}
+		dbDao.checkAndCreateTable(day.getShardTableName(),createTableDDL(day.getShardTableName()));
 		return this.delete("DUBBO_METHOD_DAY_IP.delete", day);
 	}
 }

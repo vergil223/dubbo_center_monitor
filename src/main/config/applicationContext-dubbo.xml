@@ -9,7 +9,7 @@
 	
 	<dubbo:application name="${dubbo.application.name}"/>
     <dubbo:registry protocol="${dubbo.registry.protocol}" address="${dubbo.registry.address}" check="false"/>
-    <dubbo:protocol name="dubbo" port="${dubbo.protocol.port}"/>
+    <dubbo:protocol name="dubbo" port="${dubbo.protocol.port}" threads="400"/>
     <dubbo:consumer check="false"/>
 	
 	<dubbo:service ref="lvSimpleDubboMonitor" interface="com.lvmama.soa.monitor.service.LvDubboMonitor" async="true"/>
