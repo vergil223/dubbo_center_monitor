@@ -1,7 +1,9 @@
 package com.lvmama.soa.monitor.dao.mybatis;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,5 +62,22 @@ public class DBDao extends BaseDao{
 	
 	public void createTable(Map m){
 		this.update("DB.createTable", m);
+	}
+	
+	public List<String> getTableNames(String tableNameLike){
+		return this.getList("DB.getTableNames", tableNameLike);
+	}
+	
+	public void cleanBigColumn(String tableName,Date dateBeforeToClean){
+		Map<String,Object> param=new HashMap<String,Object>();
+		param.put("tableName", tableName);
+		param.put("time", dateBeforeToClean);
+		this.update("DB.cleanBigColumnByTime", param);
+	}
+	
+	public void optimizeTable(String tableName){
+		Map<String,Object> param=new HashMap<String,Object>();
+		param.put("tableName", tableName);
+		this.update("DB.optimizeTable", param);
 	}
 }

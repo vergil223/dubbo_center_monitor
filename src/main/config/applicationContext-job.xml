@@ -164,6 +164,30 @@
 	</bean>
 	<!-- migrate DUBBO_SERVICE_DAY_IP END -->
 	
+	<!-- clean big column START-->
+	<bean id="bigColumnCleanJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="bigColumnCleanJob" />
+		</property>
+		<property name="targetMethod">
+			<value>clean</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="bigColumnCleanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="bigColumnCleanJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run at 4:00 everyday -->
+			<value>0 0 4 * * ?</value>
+		</property>
+	</bean>
+	<!-- clean big column END-->
+	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -175,6 +199,7 @@
 				<ref local="dubboServiceDayIPMigrationJobTrigger" />
 				<ref local="dubboMethodDayIPMigrationJobTriggerToday" />
 				<ref local="dubboServiceDayIPMigrationJobTriggerToday" />
+				<ref local="bigColumnCleanJobTrigger" />
 		</list>
 		</property>
 		<property name="quartzProperties">

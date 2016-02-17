@@ -8,5 +8,24 @@
 	<select id="tableExists" parameterType="java.lang.String" resultType="java.lang.Integer">
 		select count(1) from INFORMATION_SCHEMA.TABLES where table_name=#{tableName}
 	</select>
-
+	
+	<select id="getTableNames" parameterType="java.lang.String" resultType="java.lang.String">
+		select table_name from INFORMATION_SCHEMA.TABLES where table_name like #{tableNameLike}
+	</select>
+	
+	<update id="cleanBigColumnByTime" parameterType="java.util.Map">
+		<![CDATA[
+	    UPDATE ${tableName} 
+		SET 
+		SUCCESS_TIMES_DETAIL=null,
+		FAIL_TIMES_DETAIL=null,
+		ELAPSED_TOTAL_DETAIL=null,
+		ELAPSED_MAX_DETAIL=null 
+		where TIME <= #{time}	
+	    ]]>
+	</update>
+	
+	<update id="optimizeTable" parameterType="java.util.Map">
+		optimize table ${tableName}
+	</update>
 </mapper>
