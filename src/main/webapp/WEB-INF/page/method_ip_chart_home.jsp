@@ -22,7 +22,7 @@ String minuteTo=request.getAttribute("minuteTo")==null?"":(String)request.getAtt
 %>
 
 <body>
-<form name="form1" action="<%=request.getContextPath()%>/chart/provider/method/home.do">
+<form name="form1" action="<%=request.getContextPath()%>/chart/provider/methodIP/home.do">
 
 application name:
 <select name="appName">
