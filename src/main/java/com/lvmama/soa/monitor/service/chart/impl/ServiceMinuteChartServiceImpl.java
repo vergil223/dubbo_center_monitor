@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -107,15 +108,16 @@ public class ServiceMinuteChartServiceImpl implements ServiceMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> totalDetailToMerge=new ArrayList<String>();
 		for(DubboServiceDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
-			String detail=day.getSuccessTimesDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, false);
+			String detail=day.getSuccessTimesDetail();			
+			totalDetailToMerge.add(detail);
 		}
-		
+		String totalDetail=DubboDetailUtil.mergeDetailStr(totalDetailToMerge, false);
+				
 		TimeSeries timeseries = new TimeSeries("Success Times");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
 		for(List<String> detail:totalDetailList){
@@ -135,14 +137,15 @@ public class ServiceMinuteChartServiceImpl implements ServiceMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> totalDetailToMerge=new ArrayList<String>();
 		for(DubboServiceDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
 			String detail=day.getFailTimesDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, false);
+			totalDetailToMerge.add(detail);
 		}
+		String totalDetail=DubboDetailUtil.mergeDetailStr(totalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Fail Times");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
@@ -163,16 +166,18 @@ public class ServiceMinuteChartServiceImpl implements ServiceMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String elapsedTotalDetail="";
-		String successTotalDetail="";
 		List<DubboServiceDayIP> data = getData(param);
+		List<String> elapsedTotalDetailToMerge=new ArrayList<String>();
+		List<String> successTotalDetailToMerge=new ArrayList<String>();
 		for(DubboServiceDayIP day:data){
 			if(date==null){
 				date=day.getTime();				
 			}
-			elapsedTotalDetail=DubboDetailUtil.mergeDetailToStr(elapsedTotalDetail, day.getElapsedTotalDetail(), false);
-			successTotalDetail=DubboDetailUtil.mergeDetailToStr(successTotalDetail, day.getSuccessTimesDetail(), false);
+			elapsedTotalDetailToMerge.add(day.getElapsedTotalDetail());
+			successTotalDetailToMerge.add(day.getSuccessTimesDetail());
 		}
+		String elapsedTotalDetail=DubboDetailUtil.mergeDetailStr(elapsedTotalDetailToMerge, false);
+		String successTotalDetail=DubboDetailUtil.mergeDetailStr(successTotalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Elapsed Avg");
 		List<List<String>> elapsedTotalDetailList=DubboDetailUtil.detailStrToList(elapsedTotalDetail,hhmmStart,hhmmEnd);
@@ -208,15 +213,16 @@ public class ServiceMinuteChartServiceImpl implements ServiceMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> detailStrToMerge=new ArrayList<String>();
 		for(DubboServiceDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
 			String detail=day.getElapsedMaxDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, true);
+			detailStrToMerge.add(detail);
 		}
 		
+		String totalDetail=DubboDetailUtil.mergeDetailStr(detailStrToMerge, true);
 		TimeSeries timeseries = new TimeSeries("Elapsed Max");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
 		for(List<String> detail:totalDetailList){

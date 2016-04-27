@@ -1,6 +1,7 @@
 package com.lvmama.soa.monitor.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,20 @@ public class DubboServiceDayIPServiceImpl implements DubboServiceDayIPService {
 		if(DataSourceUtil.canReadFromRedis(DubboServiceDayIP.class, DateUtil.yyyyMMdd((Date)param.get("time_from")))){
 			return dubboServiceDayIPRedisDao.selectList(param);			
 		}else{
-			return dubboServiceDayIPDao.selectList(param);
+			Date timeFrom = (Date)param.get("time_from");
+			Date timeTo = (Date)param.get("time_to");
+			String fromyyyyMMdd = DateUtil.yyyyMMdd(timeFrom);
+			String toyyyyMMdd = DateUtil.yyyyMMdd(timeTo);
+			if(timeFrom!=null&&timeTo!=null&&fromyyyyMMdd.equals(toyyyyMMdd)){
+				//For performance:if it's to search the data of the same day, do not use date range
+				Map<String,Object> param2=new HashMap<String,Object>(param);
+				param2.put("time", DateUtil.trimToDay(timeFrom));
+				param2.remove("time_from");
+				param2.remove("time_to");
+				return dubboServiceDayIPDao.selectList(param2);				
+			}else{
+				return dubboServiceDayIPDao.selectList(param);				
+			}
 		}
 	}
 

@@ -128,16 +128,11 @@ public class ProviderMethodChartController {
 		param.put("appName", appName);
 		param.put("service", service);
 		param.put("method", method);
-		
-		DubboMethodDayIP dubboMethodDayIP=new DubboMethodDayIP();
-		dubboMethodDayIP.setAppName(appName);
-		param.put("shardTableName", dubboMethodDayIP.getShardTableName());
 
 		Date day = DateUtil.now();
 		if (!StringUtil.isEmpty(dayStr) && !StringUtil.isNullStr(dayStr)) {
 			day = DateUtil.parseWebDate(dayStr);
 		}
-		param.put("time", day);
 		if (StringUtil.isEmpty(minuteFrom)) {
 			minuteFrom = "0000";
 		}
@@ -146,6 +141,13 @@ public class ProviderMethodChartController {
 			minuteTo = "2359";
 		}
 		param.put("time_to", DateUtil.changeHHmm(day, minuteTo));
+		
+		DubboMethodDayIP dubboMethodDayIP=new DubboMethodDayIP();
+		dubboMethodDayIP.setAppName(appName);
+		param.put("time", day);
+		dubboMethodDayIP.setTime(day);
+		param.put("shardTableName", dubboMethodDayIP.getShardTableName());
+		
 		return param;
 	}
 

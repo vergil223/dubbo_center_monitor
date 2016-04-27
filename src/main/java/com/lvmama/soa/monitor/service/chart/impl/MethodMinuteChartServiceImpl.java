@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -113,14 +114,15 @@ public class MethodMinuteChartServiceImpl implements MethodMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> totalDetailToMerge=new ArrayList<String>();
 		for(DubboMethodDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
 			String detail=day.getSuccessTimesDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, false);
+			totalDetailToMerge.add(detail);
 		}
+		String totalDetail=DubboDetailUtil.mergeDetailStr(totalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Success Times");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
@@ -141,14 +143,15 @@ public class MethodMinuteChartServiceImpl implements MethodMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> totalDetailToMerge=new ArrayList<String>();
 		for(DubboMethodDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
 			String detail=day.getFailTimesDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, false);
+			totalDetailToMerge.add(detail);
 		}
+		String totalDetail=DubboDetailUtil.mergeDetailStr(totalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Fail Times");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
@@ -169,20 +172,23 @@ public class MethodMinuteChartServiceImpl implements MethodMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String elapsedTotalDetail="";
-		String successTotalDetail="";
 		List<DubboMethodDayIP> data = getData(param);
+		List<String> elapsedTotalDetailToMerge=new ArrayList<String>();
+		List<String> successTotalDetailToMerge=new ArrayList<String>();
 		for(DubboMethodDayIP day:data){
 			if(date==null){
 				date=day.getTime();				
 			}
-			elapsedTotalDetail=DubboDetailUtil.mergeDetailToStr(elapsedTotalDetail, day.getElapsedTotalDetail(), false);
-			successTotalDetail=DubboDetailUtil.mergeDetailToStr(successTotalDetail, day.getSuccessTimesDetail(), false);
+			elapsedTotalDetailToMerge.add(day.getElapsedTotalDetail());
+			successTotalDetailToMerge.add(day.getSuccessTimesDetail());
 		}
+		String elapsedTotalDetail=DubboDetailUtil.mergeDetailStr(elapsedTotalDetailToMerge, false);
+		String successTotalDetail=DubboDetailUtil.mergeDetailStr(successTotalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Elapsed Avg");
 		List<List<String>> elapsedTotalDetailList=DubboDetailUtil.detailStrToList(elapsedTotalDetail,hhmmStart,hhmmEnd);
 		List<List<String>> successTotalDetailList=DubboDetailUtil.detailStrToList(successTotalDetail,hhmmStart,hhmmEnd);
+		
 		for(List<String> successDetail:successTotalDetailList){
 			String successTime=successDetail.get(0);
 			String successValue=successDetail.get(1);
@@ -214,14 +220,15 @@ public class MethodMinuteChartServiceImpl implements MethodMinuteChartService{
 		String hhmmEnd=DateUtil.HHmm((Date)param.get("time_to"));
 		
 		Date date=null;
-		String totalDetail="";
+		List<String> totalDetailToMerge=new ArrayList<String>();
 		for(DubboMethodDayIP day:getData(param)){
 			if(date==null){
 				date=day.getTime();				
 			}
 			String detail=day.getElapsedMaxDetail();
-			totalDetail=DubboDetailUtil.mergeDetailToStr(totalDetail, detail, true);
+			totalDetailToMerge.add(detail);
 		}
+		String totalDetail=DubboDetailUtil.mergeDetailStr(totalDetailToMerge, false);
 		
 		TimeSeries timeseries = new TimeSeries("Elapsed Max");
 		List<List<String>> totalDetailList=DubboDetailUtil.detailStrToList(totalDetail,hhmmStart,hhmmEnd);
