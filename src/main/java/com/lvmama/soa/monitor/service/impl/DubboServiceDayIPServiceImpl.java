@@ -12,10 +12,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lvmama.soa.monitor.constant.alert.AlertParamKey;
 import com.lvmama.soa.monitor.dao.mybatis.DubboServiceDayIPDao;
 import com.lvmama.soa.monitor.dao.redis.DubboServiceDayIPRedisDao;
 import com.lvmama.soa.monitor.entity.DubboServiceDayIP;
 import com.lvmama.soa.monitor.service.DubboServiceDayIPService;
+import com.lvmama.soa.monitor.service.alert.IAlertService;
 import com.lvmama.soa.monitor.util.Assert;
 import com.lvmama.soa.monitor.util.DataSourceUtil;
 import com.lvmama.soa.monitor.util.DateUtil;
@@ -24,11 +26,13 @@ import com.lvmama.soa.monitor.util.DistributedLock;
 @Service("dubboServiceDayIPService")
 public class DubboServiceDayIPServiceImpl implements DubboServiceDayIPService {
 	private static final Log log = LogFactory.getLog(DubboServiceDayIPServiceImpl.class);
-
+	
 	@Autowired
-	DubboServiceDayIPDao dubboServiceDayIPDao;
+	private IAlertService dubboServiceDayIPAlertService;
 	@Autowired
-	DubboServiceDayIPRedisDao dubboServiceDayIPRedisDao;
+	private DubboServiceDayIPDao dubboServiceDayIPDao;
+	@Autowired
+	private DubboServiceDayIPRedisDao dubboServiceDayIPRedisDao;
 
 	@Override
 	public int insertOrAppend(DubboServiceDayIP day) {
@@ -69,7 +73,28 @@ public class DubboServiceDayIPServiceImpl implements DubboServiceDayIPService {
 
 		oldDay=DubboServiceDayIP.merge(day, oldDay);
 		
+		alert(oldDay);
+		
 		return dubboServiceDayIPRedisDao.update(oldDay);
+	}
+
+	private void alert(DubboServiceDayIP dubboServiceDayIP) {
+		new Thread(new ServiceDayIPAlertRunnable(dubboServiceDayIPAlertService,dubboServiceDayIP)).start();
+	}
+	
+	private class ServiceDayIPAlertRunnable implements Runnable{
+		private IAlertService serviceDayIPAlertService;
+		private DubboServiceDayIP dubboServiceDayIP;
+		public ServiceDayIPAlertRunnable(IAlertService serviceDayIPAlertService,DubboServiceDayIP dubboServiceDayIP){
+			this.serviceDayIPAlertService=serviceDayIPAlertService;
+			this.dubboServiceDayIP=dubboServiceDayIP;
+		}
+		@Override
+		public void run() {
+			Map<String,Object> alertParam=new HashMap<String,Object>();
+			alertParam.put(AlertParamKey.DUBBO_SERVICE_DAY_IP, dubboServiceDayIP);
+			serviceDayIPAlertService.alert(alertParam);
+		}
 	}
 
 	@Override

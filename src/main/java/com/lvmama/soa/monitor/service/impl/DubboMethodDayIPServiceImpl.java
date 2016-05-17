@@ -1,6 +1,7 @@
 package com.lvmama.soa.monitor.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lvmama.soa.monitor.constant.alert.AlertParamKey;
 import com.lvmama.soa.monitor.dao.mybatis.DubboMethodDayIPDao;
 import com.lvmama.soa.monitor.dao.redis.DubboMethodDayIPRedisDao;
 import com.lvmama.soa.monitor.entity.DubboMethodDayIP;
 import com.lvmama.soa.monitor.service.DubboMethodDayIPService;
+import com.lvmama.soa.monitor.service.alert.IAlertService;
 import com.lvmama.soa.monitor.util.DataSourceUtil;
 import com.lvmama.soa.monitor.util.DateUtil;
 import com.lvmama.soa.monitor.util.DistributedLock;
@@ -23,7 +26,9 @@ import com.lvmama.soa.monitor.util.biz.DubboDetailUtil;
 @Service("dubboMethodDayIPService")
 public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 	private static final Log log = LogFactory.getLog(DubboMethodDayIPServiceImpl.class);
-
+	
+	@Autowired
+	private IAlertService methodDayIPAlertService;
 	@Autowired
 	DubboMethodDayIPDao dubboMethodDayIPDao;
 	@Autowired
@@ -87,7 +92,28 @@ public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 		oldDay.setElapsedMaxDetail(DubboDetailUtil.mergeDetailToStr(oldDay.getElapsedMaxDetail(),
 				day.getElapsedMaxDetail(), true));
 		
+		alert(oldDay);
+		
 		return dubboMethodDayIPRedisDao.update(oldDay);
+	}
+	
+	private void alert(DubboMethodDayIP dubboMethodDayIP) {
+		new Thread(new MethodDayIPAlertRunnable(methodDayIPAlertService,dubboMethodDayIP)).start();
+	}
+	
+	private class MethodDayIPAlertRunnable implements Runnable{
+		private IAlertService methodDayIPAlertService;
+		private DubboMethodDayIP dubboMethodDayIP;
+		public MethodDayIPAlertRunnable(IAlertService methodDayIPAlertService,DubboMethodDayIP dubboMethodDayIP){
+			this.methodDayIPAlertService=methodDayIPAlertService;
+			this.dubboMethodDayIP=dubboMethodDayIP;
+		}
+		@Override
+		public void run() {
+			Map<String,Object> alertParam=new HashMap<String,Object>();
+			alertParam.put(AlertParamKey.DUBBO_METHOD_DAY_IP, dubboMethodDayIP);
+			methodDayIPAlertService.alert(alertParam);
+		}
 	}
 	
 	@Override

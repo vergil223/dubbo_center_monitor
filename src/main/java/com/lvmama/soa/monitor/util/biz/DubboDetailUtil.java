@@ -95,6 +95,12 @@ public class DubboDetailUtil {
 			
 		}catch(Exception e){
 			log.error("detailStrToList error, detailStr:"+detailStr,e); 
+		}finally{
+			try{
+				br.close();				
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}
 		}
 		
 		return resultList;

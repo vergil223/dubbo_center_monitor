@@ -119,18 +119,25 @@ public class DateUtil {
 		return c.getTime();
 	}
 	
+	/**
+	 * 获取当前hhmm是当天的第几分钟，范围是0-1440
+	 * @param hhmm
+	 * @return
+	 */
+	public static int getMinuteOfDay(String hhmm){
+		String hour=hhmm.substring(0, 2);
+		if(hour.startsWith("0")){
+			hour=hour.substring(1);
+		}
+		String min=hhmm.substring(2);
+		if(min.startsWith("0")){
+			min=min.substring(1);
+		}
+		
+		return 60*Integer.parseInt(hour)+Integer.parseInt(min);
+	}
+	
 	public static void main(String args[])throws Exception{
-		Date d=new Date();
-		System.out.println(d);
-//		System.out.println("trimToMin:"+DateUtil.trimToMin(d));
-//		System.out.println("trimToDay:"+DateUtil.trimToDay(d));
-//		System.out.println(HHmm(d));
-//		System.out.println(yyyyMMdd(d));
-//		System.out.println(new Date(0L));
-//		System.out.println(changeHHmm(d,"1524"));
-//		System.out.println(daysBefore(365));
-//		System.out.println(getYesterdayYMD());
-//		System.out.println(minutesBefore(d,12));
-		System.out.println(yyyyMMddHHmmss(d));
+		System.out.println(getMinuteOfDay("1012"));
 	}
 }
