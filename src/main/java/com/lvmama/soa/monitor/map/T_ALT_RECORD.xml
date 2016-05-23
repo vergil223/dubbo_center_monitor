@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="T_ALT_RECORD" >
+  <resultMap id="BaseResultMap" type="com.lvmama.soa.monitor.entity.alert.TAltRecord" >
+    <id column="ID_" property="id_" jdbcType="BIGINT" />
+    <result column="APP_NAME" property="appName" jdbcType="VARCHAR" />
+    <result column="SERVICE" property="service" jdbcType="VARCHAR" />
+    <result column="METHOD" property="method" jdbcType="VARCHAR" />
+    <result column="CONSUMER_IP" property="consumerIp" jdbcType="VARCHAR" />
+    <result column="PROVIDER_IP" property="providerIp" jdbcType="VARCHAR" />
+    <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.lvmama.soa.monitor.entity.alert.TAltRecord" extends="BaseResultMap" >
+    <result column="ALERT_MSG" property="alertMsg" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID_, APP_NAME, SERVICE, METHOD, CONSUMER_IP, PROVIDER_IP, INSERT_TIME
+  </sql>
+  <sql id="Blob_Column_List" >
+    ALERT_MSG
+  </sql>
+  
+  <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_ALT_RECORD
+    where 1=1
+    <if test="id_ != null" >
+       and ID_=#{id_,jdbcType=BIGINT}
+      </if>
+      <if test="appName != null" >
+        APP_NAME = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="service != null" >
+        SERVICE = #{service,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        METHOD = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerIp != null" >
+        CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="providerIp != null" >
+        PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alertMsg != null" >
+        ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="insertTime_from != null" >
+      	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
+      </if>
+      <if test="insertTime_to != null" >
+      	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
+      </if>
+  </select>
+  
+  
+  <insert id="insert" parameterType="com.lvmama.soa.monitor.entity.alert.TAltRecord" >
+    insert into T_ALT_RECORD
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id_ != null" >
+        ID_,
+      </if>
+      <if test="appName != null" >
+        APP_NAME,
+      </if>
+      <if test="service != null" >
+        SERVICE,
+      </if>
+      <if test="method != null" >
+        METHOD,
+      </if>
+      <if test="consumerIp != null" >
+        CONSUMER_IP,
+      </if>
+      <if test="providerIp != null" >
+        PROVIDER_IP,
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME,
+      </if>
+      <if test="alertMsg != null" >
+        ALERT_MSG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id_ != null" >
+        #{id_,jdbcType=BIGINT},
+      </if>
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="service != null" >
+        #{service,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerIp != null" >
+        #{consumerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="providerIp != null" >
+        #{providerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alertMsg != null" >
+        #{alertMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_ALT_RECORD
+    where ID_ = #{id_,jdbcType=BIGINT}
+  </delete>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.lvmama.soa.monitor.entity.alert.TAltRecord" >
+    update T_ALT_RECORD
+    <set >
+      <if test="appName != null" >
+        APP_NAME = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="service != null" >
+        SERVICE = #{service,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        METHOD = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerIp != null" >
+        CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="providerIp != null" >
+        PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alertMsg != null" >
+        ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID_ = #{id_,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.lvmama.soa.monitor.entity.alert.TAltRecord" >
+    update T_ALT_RECORD
+    set APP_NAME = #{appName,jdbcType=VARCHAR},
+      SERVICE = #{service,jdbcType=VARCHAR},
+      METHOD = #{method,jdbcType=VARCHAR},
+      CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+      PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR}
+    where ID_ = #{id_,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lvmama.soa.monitor.entity.alert.TAltRecord" >
+    update T_ALT_RECORD
+    set APP_NAME = #{appName,jdbcType=VARCHAR},
+      SERVICE = #{service,jdbcType=VARCHAR},
+      METHOD = #{method,jdbcType=VARCHAR},
+      CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+      PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP}
+    where ID_ = #{id_,jdbcType=BIGINT}
+  </update>
+</mapper>

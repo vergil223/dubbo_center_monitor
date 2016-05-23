@@ -61,6 +61,12 @@ public class DubboMethodDayIPDao extends BaseDao{
 		Assert.notEmpty(params.get("method"), "method");
 		Assert.notEmpty(params.get("time"), "time");
 		
+		if(params.get("shardTableName")==null){
+			DubboMethodDayIP dubboMethodDayIP=new DubboMethodDayIP();
+			dubboMethodDayIP.setAppName(params.get("appName").toString());
+			params.put("shardTableName", dubboMethodDayIP.getShardTableName());			
+		}
+		
 		return this.getList("DUBBO_METHOD_DAY_IP.selectList", params);
 	}
 	

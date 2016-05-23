@@ -1,0 +1,2 @@
+INSERT INTO `T_ALT_ACTION` (`ID_`, `CONTENT_TYPE`, `CONTENT`, `DESCRIPTION`, `ENABLED`) VALUES (1, 'JAVA_CLASS', 'com.lvmama.soa.monitor.service.alert.action.impl.MethodSuccessTimesLogAction', '在后台打印log', 'Y');
+INSERT INTO `T_ALT_ACTION` (`ID_`, `CONTENT_TYPE`, `CONTENT`, `DESCRIPTION`, `ENABLED`) VALUES (2, 'JAVA_CLASS', 'com.lvmama.soa.monitor.service.alert.action.impl.MethodSuccessTimesSaveToDBAction', '存入T_ALT_RECORD', 'Y');

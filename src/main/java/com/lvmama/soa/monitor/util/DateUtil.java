@@ -57,6 +57,13 @@ public class DateUtil {
 		return now.getTime();
 	}
 	
+	public static Date daysBefore(Date date,int days){
+		Calendar baseDate=Calendar.getInstance();
+		baseDate.setTime(date);
+		baseDate.set(Calendar.DAY_OF_YEAR, baseDate.get(Calendar.DAY_OF_YEAR)-days);
+		return baseDate.getTime();
+	}
+	
 	public static Date minutesBefore(Date date,int minutes){
 		Calendar c=Calendar.getInstance();
 		c.setTime(date);
@@ -137,7 +144,36 @@ public class DateUtil {
 		return 60*Integer.parseInt(hour)+Integer.parseInt(min);
 	}
 	
+	/**
+	 * 假设输入为0130, -5,则输出0125
+	 * 如果计算完的结果超出了当天，则把超出部分改成当天最后一分钟：
+	 * (0002,-5) -> 0000
+	 * (2358,5) -> 2359
+	 * @param diffMin
+	 * @return
+	 */
+	public static String hhmmDiffMinInSameDay(String hhmm, int diffMin){
+		Assert.notEmpty(hhmm, "hhmm");
+		
+		Date baseDate=DateUtil.changeHHmm(now(), hhmm);
+		long baseMillSec=baseDate.getTime();
+		
+		long diffTempMillSec=baseMillSec+(diffMin*60*1000);
+		Date diffDate=new Date(diffTempMillSec);
+		
+		String diffYYYYMMdd = DateUtil.yyyyMMdd(diffDate);
+		String baseYYYYMMdd = DateUtil.yyyyMMdd(baseDate);
+		
+		if(diffYYYYMMdd.equals(baseYYYYMMdd)){
+			return DateUtil.HHmm(diffDate);			
+		}else if(diffYYYYMMdd.compareTo(baseYYYYMMdd)>0){
+			return "2359";
+		}else{
+			return "0000";
+		}
+	}
+	
 	public static void main(String args[])throws Exception{
-		System.out.println(getMinuteOfDay("1012"));
+		System.out.println(hhmmDiffMinInSameDay("2358",5));
 	}
 }

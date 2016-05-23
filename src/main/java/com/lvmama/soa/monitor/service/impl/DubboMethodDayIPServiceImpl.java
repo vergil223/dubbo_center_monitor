@@ -54,6 +54,7 @@ public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 
 			count = append(day);
 			if (count == 0) {
+				alert(day);
 				count = dubboMethodDayIPRedisDao.insert(day);
 			}
 		} catch (Exception e) {

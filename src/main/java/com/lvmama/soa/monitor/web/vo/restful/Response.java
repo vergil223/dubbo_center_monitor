@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 
 public class Response {
 	private String status;
+	private String errorMsg;
 	private Map body;
 	
 	public String getStatus() {
@@ -22,6 +23,14 @@ public class Response {
 
 	public void setBody(Map body) {
 		this.body = body;
+	}
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
 	public String toJSON(){
