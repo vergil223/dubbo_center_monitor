@@ -18,9 +18,9 @@ import com.lvmama.soa.monitor.util.StringUtil;
 public class BigColumnCleanJob {
 	private static final Log log=LogFactory.getLog(BigColumnCleanJob.class);
 	
-	private static final int DAYS_BEFORE_TO_CLEAN;
+	private static final int DAYS_BEFORE_TO_CLEAN_BIG_COLUMN;
 	static{
-		DAYS_BEFORE_TO_CLEAN=StringUtil.isEmpty(PropertyUtil.getProperty("DAYS_BEFORE_TO_CLEAN"))?60:Integer.valueOf(PropertyUtil.getProperty("DAYS_BEFORE_TO_CLEAN"));
+		DAYS_BEFORE_TO_CLEAN_BIG_COLUMN=StringUtil.isEmpty(PropertyUtil.getProperty("DAYS_BEFORE_TO_CLEAN_BIG_COLUMN"))?60:Integer.valueOf(PropertyUtil.getProperty("DAYS_BEFORE_TO_CLEAN_BIG_COLUMN"));
 	}
 	
 	@Autowired
@@ -38,7 +38,9 @@ public class BigColumnCleanJob {
 		log.info("BigColumnCleanJob START");
 		
 		doClean("DUBBO_METHOD_DAY_IP_%");
+		doClean("DUBBO_METHOD_DAY_%");
 		doClean("DUBBO_SERVICE_DAY_IP_%");
+		doClean("DUBBO_SERVICE_DAY_%");
 		
 		long cost=DateUtil.now().getTime()-start;
 		log.info("BigColumnCleanJob END. cost:"+cost+"ms");
@@ -46,20 +48,19 @@ public class BigColumnCleanJob {
 	
 	private void doClean(String tableNameLike){
 		long start=DateUtil.now().getTime();
-		log.info("BigColumnCleanJob.doClean START for table:["+tableNameLike+"], DAYS_BEFORE_TO_CLEAN="+DAYS_BEFORE_TO_CLEAN);
+		log.info("BigColumnCleanJob.doClean START for table:["+tableNameLike+"], DAYS_BEFORE_TO_CLEAN_BIG_COLUMN="+DAYS_BEFORE_TO_CLEAN_BIG_COLUMN);
 		
 		List<String> tableNames=Collections.EMPTY_LIST;
 		Date dateBeforeToClean=null;
 		try{
 			tableNames=dbDao.getTableNames(tableNameLike);
-			dateBeforeToClean=DateUtil.daysBefore(DAYS_BEFORE_TO_CLEAN);
+			dateBeforeToClean=DateUtil.daysBefore(DAYS_BEFORE_TO_CLEAN_BIG_COLUMN);
 		}catch(Exception e){
-			log.error("error in BigColumnCleanJob.doClean:["+tableNameLike+"], DAYS_BEFORE_TO_CLEAN="+DAYS_BEFORE_TO_CLEAN);
+			log.error("error in BigColumnCleanJob.doClean:["+tableNameLike+"], DAYS_BEFORE_TO_CLEAN_BIG_COLUMN="+DAYS_BEFORE_TO_CLEAN_BIG_COLUMN);
 			return;
 		}
 		
 		for(String tableName:tableNames){
-				System.out.println(tableName);
 				doCleanColumn(tableName, dateBeforeToClean);
 				doOptimizeTable(tableName);
 		}

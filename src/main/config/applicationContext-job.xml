@@ -74,6 +74,30 @@
 	</bean>
 	<!-- flush method day ip from cache toDB END-->
 	
+	<!-- flush method day from cache toDB START-->
+	<bean id="writeMethodDayCacheToDBJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="methodDayCache" />
+		</property>
+		<property name="targetMethod">
+			<value>writeMethodDayCacheToDB</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="writeMethodDayCacheToDBJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="writeMethodDayCacheToDBJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 2 minute -->
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+	<!-- flush method day from cache toDB END-->
+	
 	<!-- flush service day ip from cache to DB START-->
 	<bean id="writeServiceDayIPCacheToDBJobFactory"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -125,11 +149,44 @@
 			<ref bean="dubboMethodDayIPMigrationJobFactory" />
 		</property>
 		<property name="cronExpression">
-			<!-- run every day -->
+			<!-- run every 6 hours -->
 			<value>0 0 0/6 * * ?</value>
 		</property>
 	</bean>
 	<!-- migrate DUBBO_METHOD_DAY_IP END -->
+	
+	<!-- migrate DUBBO_METHOD_DAY START -->
+	<bean id="dubboMethodDayMigrationJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dubboMethodDayMigrationJob" />
+		</property>
+		<property name="targetMethod">
+			<value>redisToMysql</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="dubboMethodDayMigrationJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboMethodDayMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 3 hours -->
+			<value>0 0 1 * * ?</value>
+		</property>
+	</bean>
+	<bean id="dubboMethodDayMigrationJobTriggerToday" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="dubboMethodDayMigrationJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run every 3 hours -->
+			<value>0 0 0/3 * * ?</value>
+		</property>
+	</bean>
+	<!-- migrate DUBBO_METHOD_DAY END -->
 	
 	<!-- migrate DUBBO_SERVICE_DAY_IP START -->
 	<bean id="dubboServiceDayIPMigrationJobFactory"
@@ -188,6 +245,30 @@
 	</bean>
 	<!-- clean big column END-->
 	
+	<!-- clean big column START-->
+	<bean id="alertRecordCleanJobFactory"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="alertRecordCleanJob" />
+		</property>
+		<property name="targetMethod">
+			<value>clean</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="alertRecordCleanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="alertRecordCleanJobFactory" />
+		</property>
+		<property name="cronExpression">
+			<!-- run at 5:00 everyday -->
+			<value>0 0 5 * * ?</value>
+		</property>
+	</bean>
+	<!-- clean big column END-->
+	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -200,6 +281,9 @@
 				<ref local="dubboMethodDayIPMigrationJobTriggerToday" />
 				<ref local="dubboServiceDayIPMigrationJobTriggerToday" />
 				<ref local="bigColumnCleanJobTrigger" />
+				<ref local="writeMethodDayCacheToDBJobTrigger" />
+				<ref local="dubboMethodDayMigrationJobTrigger" />
+				<ref local="dubboMethodDayMigrationJobTriggerToday" />
 		</list>
 		</property>
 		<property name="quartzProperties">

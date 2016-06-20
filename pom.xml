@@ -12,6 +12,11 @@
     <url>http://maven.apache.org</url>
     <dependencies>
 		<!-- spring -->
+		<dependency>
+            <groupId>org.springframework</groupId>
+	        <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
        	<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -188,7 +193,19 @@
 		<dependency>
 			<groupId>com.lvmama.comm</groupId>
 			<artifactId>lvmama_soa</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.3</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>com.lvmama.comm</groupId>
+    		<artifactId>lvmama-lang</artifactId>
+    		<version>1.0.3</version>
+    		<exclusions>
+		       <exclusion>
+		           <groupId>org.springframework</groupId>
+            	   <artifactId>spring-core</artifactId>
+		       </exclusion>
+		    </exclusions>
 		</dependency>
 		
 		<dependency>
@@ -216,11 +233,17 @@
   			<version>3.0.2</version>
   		</dependency>
   		
-  		<dependency>
+  		<!-- <dependency>
       		<groupId>redis.clients</groupId>
       		<artifactId>jedis</artifactId>
       		<version>2.4.2</version>
-    	</dependency>
+    	</dependency> -->
+  		
+    	<dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.8.0</version>
+        </dependency>
     	
     	<dependency>
       		<groupId>com.alibaba</groupId>
@@ -318,22 +341,36 @@
 				<p.jdbc.url><![CDATA[jdbc:mysql://192.168.0.106:3306/soa_monitor?useUnicode=true&characterEncoding=utf8]]></p.jdbc.url>
 				<p.cache.server>127.0.0.1:11211</p.cache.server>
 				<p.redis.enable>true</p.redis.enable>
+				<p.redis.isCluster>true</p.redis.isCluster>
 				<p.redis.writer.server>192.168.0.55</p.redis.writer.server>
-				<p.redis.writer.port>6379</p.redis.writer.port>
+				<p.redis.writer.port>6380</p.redis.writer.port>
 				<p.redis.writer.maxIdle>100</p.redis.writer.maxIdle>
 				<p.redis.writer.maxTotal>2000</p.redis.writer.maxTotal>
 				<p.redis.writer.checkingIntervalSecs>30</p.redis.writer.checkingIntervalSecs>
 				<p.redis.writer.evictableIdleTimeSecs>600</p.redis.writer.evictableIdleTimeSecs>
 				<p.redis.writer.maxWaitMillis>5</p.redis.writer.maxWaitMillis>
-				<p.redis.reader.server>192.168.0.54</p.redis.reader.server>
-				<p.redis.reader.port>6379</p.redis.reader.port>
+				<p.redis.reader.server>192.168.0.55</p.redis.reader.server>
+				<p.redis.reader.port>6380</p.redis.reader.port>
 				<p.redis.reader.maxIdle>100</p.redis.reader.maxIdle>
 				<p.redis.reader.maxTotal>2000</p.redis.reader.maxTotal>
 				<p.redis.reader.checkingIntervalSecs>30</p.redis.reader.checkingIntervalSecs>
 				<p.redis.reader.evictableIdleTimeSecs>600</p.redis.reader.evictableIdleTimeSecs>
 				<p.redis.reader.maxWaitMillis>5</p.redis.reader.maxWaitMillis>
-				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>432000</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
-				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>864000</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>
+				<p.cluster.redis.server>10.200.1.209:6371,10.200.1.209:6372,10.200.1.209:6373,10.200.1.209:6374,10.200.1.209:6375,10.200.1.209:6376</p.cluster.redis.server>
+                <p.cluster.redis.enable>true</p.cluster.redis.enable>
+                <p.cluster.redis.timeout>1000</p.cluster.redis.timeout>
+                <p.cluster.redis.maxRedirections>5</p.cluster.redis.maxRedirections>
+                <p.pool.config.maxTotal>30</p.pool.config.maxTotal>
+                <p.pool.config.maxIdle>20</p.pool.config.maxIdle>
+                <p.pool.config.minIdle>10</p.pool.config.minIdle>
+                <p.pool.config.blockWhenExhausted>true</p.pool.config.blockWhenExhausted>
+                <p.pool.config.maxWaitMillis>3000</p.pool.config.maxWaitMillis>
+                <p.pool.config.testOnBorrow>false</p.pool.config.testOnBorrow>
+                <p.pool.config.testOnReturn>false</p.pool.config.testOnReturn>
+                <p.pool.config.testWhileIdle>false</p.pool.config.testWhileIdle>
 			</properties>
 		</profile>
 		
@@ -359,22 +396,36 @@
 				<p.jdbc.url><![CDATA[jdbc:mysql://192.168.0.106:3306/soa_monitor?useUnicode=true&characterEncoding=utf8]]></p.jdbc.url>
 				<p.cache.server>10.0.2.203:12000</p.cache.server>
 				<p.redis.enable>true</p.redis.enable>
+				<p.redis.isCluster>true</p.redis.isCluster>
 				<p.redis.writer.server>192.168.0.55</p.redis.writer.server>
-				<p.redis.writer.port>6379</p.redis.writer.port>
+				<p.redis.writer.port>6380</p.redis.writer.port>
 				<p.redis.writer.maxIdle>100</p.redis.writer.maxIdle>
 				<p.redis.writer.maxTotal>2000</p.redis.writer.maxTotal>
 				<p.redis.writer.checkingIntervalSecs>30</p.redis.writer.checkingIntervalSecs>
 				<p.redis.writer.evictableIdleTimeSecs>600</p.redis.writer.evictableIdleTimeSecs>
 				<p.redis.writer.maxWaitMillis>5</p.redis.writer.maxWaitMillis>
-				<p.redis.reader.server>192.168.0.54</p.redis.reader.server>
-				<p.redis.reader.port>6379</p.redis.reader.port>
+				<p.redis.reader.server>192.168.0.55</p.redis.reader.server>
+				<p.redis.reader.port>6380</p.redis.reader.port>
 				<p.redis.reader.maxIdle>100</p.redis.reader.maxIdle>
 				<p.redis.reader.maxTotal>2000</p.redis.reader.maxTotal>
 				<p.redis.reader.checkingIntervalSecs>30</p.redis.reader.checkingIntervalSecs>
 				<p.redis.reader.evictableIdleTimeSecs>600</p.redis.reader.evictableIdleTimeSecs>
 				<p.redis.reader.maxWaitMillis>5</p.redis.reader.maxWaitMillis>
-				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>432000</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
-				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>864000</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>
+				<p.cluster.redis.server>10.200.1.209:6371,10.200.1.209:6372,10.200.1.209:6373,10.200.1.209:6374,10.200.1.209:6375,10.200.1.209:6376</p.cluster.redis.server>
+                <p.cluster.redis.enable>true</p.cluster.redis.enable>
+                <p.cluster.redis.timeout>1000</p.cluster.redis.timeout>
+                <p.cluster.redis.maxRedirections>5</p.cluster.redis.maxRedirections>
+                <p.pool.config.maxTotal>30</p.pool.config.maxTotal>
+                <p.pool.config.maxIdle>20</p.pool.config.maxIdle>
+                <p.pool.config.minIdle>10</p.pool.config.minIdle>
+                <p.pool.config.blockWhenExhausted>true</p.pool.config.blockWhenExhausted>
+                <p.pool.config.maxWaitMillis>3000</p.pool.config.maxWaitMillis>
+                <p.pool.config.testOnBorrow>false</p.pool.config.testOnBorrow>
+                <p.pool.config.testOnReturn>false</p.pool.config.testOnReturn>
+                <p.pool.config.testWhileIdle>false</p.pool.config.testWhileIdle>
 			</properties>
 		</profile>
 		
@@ -400,22 +451,36 @@
 				<p.jdbc.url><![CDATA[jdbc:mysql://192.168.0.106:3306/soa_monitor?useUnicode=true&characterEncoding=utf8]]></p.jdbc.url>
 				<p.cache.server>192.168.0.204:12000,192.168.0.205:12000</p.cache.server>
 				<p.redis.enable>true</p.redis.enable>
+				<p.redis.isCluster>true</p.redis.isCluster>
 				<p.redis.writer.server>192.168.0.55</p.redis.writer.server>
-				<p.redis.writer.port>6379</p.redis.writer.port>
+				<p.redis.writer.port>6380</p.redis.writer.port>
 				<p.redis.writer.maxIdle>100</p.redis.writer.maxIdle>
 				<p.redis.writer.maxTotal>2000</p.redis.writer.maxTotal>
 				<p.redis.writer.checkingIntervalSecs>30</p.redis.writer.checkingIntervalSecs>
 				<p.redis.writer.evictableIdleTimeSecs>600</p.redis.writer.evictableIdleTimeSecs>
 				<p.redis.writer.maxWaitMillis>5</p.redis.writer.maxWaitMillis>
-				<p.redis.reader.server>192.168.0.54</p.redis.reader.server>
-				<p.redis.reader.port>6379</p.redis.reader.port>
+				<p.redis.reader.server>192.168.0.55</p.redis.reader.server>
+				<p.redis.reader.port>6380</p.redis.reader.port>
 				<p.redis.reader.maxIdle>100</p.redis.reader.maxIdle>
 				<p.redis.reader.maxTotal>2000</p.redis.reader.maxTotal>
 				<p.redis.reader.checkingIntervalSecs>30</p.redis.reader.checkingIntervalSecs>
 				<p.redis.reader.evictableIdleTimeSecs>600</p.redis.reader.evictableIdleTimeSecs>
 				<p.redis.reader.maxWaitMillis>5</p.redis.reader.maxWaitMillis>
-				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>432000</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
-				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>864000</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>
+				<p.cluster.redis.server>10.200.1.209:6371,10.200.1.209:6372,10.200.1.209:6373,10.200.1.209:6374,10.200.1.209:6375,10.200.1.209:6376</p.cluster.redis.server>
+                <p.cluster.redis.enable>true</p.cluster.redis.enable>
+                <p.cluster.redis.timeout>1000</p.cluster.redis.timeout>
+                <p.cluster.redis.maxRedirections>5</p.cluster.redis.maxRedirections>
+                <p.pool.config.maxTotal>30</p.pool.config.maxTotal>
+                <p.pool.config.maxIdle>20</p.pool.config.maxIdle>
+                <p.pool.config.minIdle>10</p.pool.config.minIdle>
+                <p.pool.config.blockWhenExhausted>true</p.pool.config.blockWhenExhausted>
+                <p.pool.config.maxWaitMillis>3000</p.pool.config.maxWaitMillis>
+                <p.pool.config.testOnBorrow>false</p.pool.config.testOnBorrow>
+                <p.pool.config.testOnReturn>false</p.pool.config.testOnReturn>
+                <p.pool.config.testWhileIdle>false</p.pool.config.testWhileIdle>
 			</properties>
 		</profile>
 		
@@ -441,22 +506,36 @@
 				<p.jdbc.url><![CDATA[jdbc:mysql://192.168.0.106:3306/soa_monitor?useUnicode=true&characterEncoding=utf8]]></p.jdbc.url>
 				<p.cache.server>127.0.0.1:11211</p.cache.server>
 				<p.redis.enable>true</p.redis.enable>
+				<p.redis.isCluster>true</p.redis.isCluster>
 				<p.redis.writer.server>192.168.0.55</p.redis.writer.server>
-				<p.redis.writer.port>6379</p.redis.writer.port>
+				<p.redis.writer.port>6380</p.redis.writer.port>
 				<p.redis.writer.maxIdle>100</p.redis.writer.maxIdle>
 				<p.redis.writer.maxTotal>2000</p.redis.writer.maxTotal>
 				<p.redis.writer.checkingIntervalSecs>30</p.redis.writer.checkingIntervalSecs>
 				<p.redis.writer.evictableIdleTimeSecs>600</p.redis.writer.evictableIdleTimeSecs>
 				<p.redis.writer.maxWaitMillis>5</p.redis.writer.maxWaitMillis>
-				<p.redis.reader.server>192.168.0.54</p.redis.reader.server>
-				<p.redis.reader.port>6379</p.redis.reader.port>
+				<p.redis.reader.server>192.168.0.55</p.redis.reader.server>
+				<p.redis.reader.port>6380</p.redis.reader.port>
 				<p.redis.reader.maxIdle>100</p.redis.reader.maxIdle>
 				<p.redis.reader.maxTotal>2000</p.redis.reader.maxTotal>
 				<p.redis.reader.checkingIntervalSecs>30</p.redis.reader.checkingIntervalSecs>
 				<p.redis.reader.evictableIdleTimeSecs>600</p.redis.reader.evictableIdleTimeSecs>
 				<p.redis.reader.maxWaitMillis>5</p.redis.reader.maxWaitMillis>
-				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>432000</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
-				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>864000</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboServiceDayIP.ttl_seconds>
+				<p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>86400</p.com.lvmama.soa.monitor.entity.DubboMethodDay.ttl_seconds>
+				<p.cluster.redis.server>10.200.1.209:6371,10.200.1.209:6372,10.200.1.209:6373,10.200.1.209:6374,10.200.1.209:6375,10.200.1.209:6376</p.cluster.redis.server>
+                <p.cluster.redis.enable>true</p.cluster.redis.enable>
+                <p.cluster.redis.timeout>1000</p.cluster.redis.timeout>
+                <p.cluster.redis.maxRedirections>5</p.cluster.redis.maxRedirections>
+                <p.pool.config.maxTotal>30</p.pool.config.maxTotal>
+                <p.pool.config.maxIdle>20</p.pool.config.maxIdle>
+                <p.pool.config.minIdle>10</p.pool.config.minIdle>
+                <p.pool.config.blockWhenExhausted>true</p.pool.config.blockWhenExhausted>
+                <p.pool.config.maxWaitMillis>3000</p.pool.config.maxWaitMillis>
+                <p.pool.config.testOnBorrow>false</p.pool.config.testOnBorrow>
+                <p.pool.config.testOnReturn>false</p.pool.config.testOnReturn>
+                <p.pool.config.testWhileIdle>false</p.pool.config.testWhileIdle>
 			</properties>
 		</profile>
 		

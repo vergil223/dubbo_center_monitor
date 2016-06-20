@@ -1,6 +1,10 @@
 package com.lvmama.soa.monitor.entity.alert;
 
-public class TAltCondition {
+public class TAltCondition implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id_;
 	private String contentType;
 	private String content;

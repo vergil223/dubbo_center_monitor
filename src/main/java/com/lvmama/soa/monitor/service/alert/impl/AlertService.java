@@ -20,7 +20,6 @@ import com.lvmama.soa.monitor.entity.alert.TAltCondition;
 import com.lvmama.soa.monitor.service.alert.IAlertService;
 import com.lvmama.soa.monitor.service.alert.action.IAction;
 import com.lvmama.soa.monitor.service.alert.condition.ICondition;
-import com.lvmama.soa.monitor.util.StringUtil;
 
 @Service
 public abstract class AlertService implements IAlertService {
@@ -36,7 +35,12 @@ public abstract class AlertService implements IAlertService {
 	private ICondition defaultGroovyCondition;
 	@Autowired
 	private IAction defaultGroovyAction;
-
+	
+	@Override
+	public List<TAltAlert> findAllAlert(){
+		return tAltAlertDao.findAllEnabledAlert();
+	}
+	
 	@Override
 	public void alert(Map<String, Object> param) {
 		List<TAltAlert> tAltAlerts = tAltAlertDao.findAllEnabledAlert();
@@ -45,7 +49,8 @@ public abstract class AlertService implements IAlertService {
 				if (isTarget(param, tAltAlert)) {
 					List<TAltCondition> tAltConditions = getConditions(tAltAlert);
 					List<TAltAction> tAltActions = getActions(tAltAlert);
-
+					
+					boolean meetCondition=true;
 					for (int i = 0; i < tAltConditions.size(); i++) {
 						TAltCondition curCondition = tAltConditions.get(i);
 						if (!Enabled.Y.equals(curCondition.getEnabled())) {
@@ -55,13 +60,18 @@ public abstract class AlertService implements IAlertService {
 							if (!doCondition(param, curCondition,
 									tAltAlert.getConditionParam())) {
 								//do not trigger action if one of the condition failed
-								return;
+								meetCondition=false;
+								break;
 							}
 						} catch (Exception e) {
 							log.error(
 									"error when do condition, condition id:"
 											+ curCondition.getId_(), e);
 						}
+					}
+					
+					if(!meetCondition){
+						continue;
 					}
 					
 					for (int i = 0; i < tAltActions.size(); i++) {
@@ -77,36 +87,6 @@ public abstract class AlertService implements IAlertService {
 											+ tAltAction.getId_(), e);
 						}
 					}
-					
-//					if (tAltConditions == null || tAltActions == null) {
-//						continue;
-//					} else if (tAltConditions.size() != tAltActions.size()) {
-//						log.error("The number of Actions in an Alert should be same as the number of Condtions. Alert:"
-//								+ tAltAlert.getId_());
-//						continue;
-//					}
-
-//					for (int i = 0; i < tAltConditions.size(); i++) {
-//						TAltCondition curCondition = tAltConditions.get(i);
-//						TAltAction curAction = tAltActions.get(i);
-//						if (!Enabled.Y.equals(curCondition.getEnabled())
-//								|| !Enabled.Y.equals(curAction.getEnabled())) {
-//							continue;
-//						}
-//						try {
-//							if (doCondition(param, curCondition,
-//									tAltAlert.getConditionParam())) {
-//								doAction(param, curAction,
-//										tAltAlert.getActionParam());
-//							}
-//						} catch (Exception e) {
-//							log.error(
-//									"error when do condition and action, condition id:"
-//											+ curCondition.getId_()
-//											+ " action id:"
-//											+ curAction.getId_(), e);
-//						}
-//					}
 				}
 			} catch (Exception e) {
 				log.error(
@@ -123,7 +103,7 @@ public abstract class AlertService implements IAlertService {
 	}
 
 	private List<TAltAction> getActions(TAltAlert tAltAlert) {
-		return tAltActionDao.findByIds(tAltAlert.getConditionIds());
+		return tAltActionDao.findByIds(tAltAlert.getActionIds());
 	}
 	
 	abstract protected boolean isTarget(Map<String, Object> param, TAltAlert tAltAlert);

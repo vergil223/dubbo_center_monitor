@@ -20,7 +20,7 @@
     ALERT_MSG
   </sql>
   
-  <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+  <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
     select 
     <include refid="Base_Column_List" />
     ,
@@ -115,6 +115,47 @@
       </if>
     </trim>
   </insert>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="java.lang.Long" >
+    select count(1)
+    from T_ALT_RECORD
+    where 1=1
+    <if test="id_ != null" >
+       and ID_=#{id_,jdbcType=BIGINT}
+      </if>
+      <if test="appName != null" >
+        APP_NAME = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="service != null" >
+        SERVICE = #{service,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        METHOD = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerIp != null" >
+        CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="providerIp != null" >
+        PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alertMsg != null" >
+        ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="insertTime_from != null" >
+      	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
+      </if>
+      <if test="insertTime_to != null" >
+      	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
+      </if>
+  </select>
+  
+  <delete id="deleteBeforeTime" parameterType="java.util.Date" >
+    <![CDATA[delete from T_ALT_RECORD
+    where INSERT_TIME <= #{insertTime,jdbcType=TIMESTAMP}]]>
+  </delete>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from T_ALT_RECORD

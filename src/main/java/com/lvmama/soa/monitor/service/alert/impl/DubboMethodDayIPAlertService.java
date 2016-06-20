@@ -2,7 +2,6 @@ package com.lvmama.soa.monitor.service.alert.impl;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.soa.monitor.constant.alert.AlertParamKey;
@@ -15,6 +14,10 @@ public class DubboMethodDayIPAlertService extends AlertService{
 	protected boolean isTarget(Map<String, Object> param, TAltAlert tAltAlert) {
 		DubboMethodDayIP methodDayIp = (DubboMethodDayIP) param
 				.get(AlertParamKey.DUBBO_METHOD_DAY_IP);
+		if(methodDayIp==null){
+			return false;
+		}
+		
 		String service = methodDayIp.getService();
 		String method = methodDayIp.getMethod();
 

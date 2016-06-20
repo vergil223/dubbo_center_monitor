@@ -25,6 +25,12 @@
     where ENABLED='Y'
   </select>
   
+  <select id="findAllAlert" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ALT_ALERT
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

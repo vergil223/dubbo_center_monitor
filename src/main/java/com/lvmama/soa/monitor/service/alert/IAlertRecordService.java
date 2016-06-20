@@ -9,4 +9,6 @@ public interface IAlertRecordService {
 	public void insert(TAltRecord record);
 	
 	public List<TAltRecord> selectList(Map params);
+	
+	public long count(Map params);
 }

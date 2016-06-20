@@ -1,0 +1,9 @@
+获得某个应用最近的成功次数：/{app}/success
+获得某个应用最近的失败次数：/list/provider/app/{app}/fail
+获得某个应用最近的平均执行时间：/list/provider/app/{app}/elapsed_avg
+获得某个应用最近的最大执行时间：/list/provider/app/{app}/elapsed_max
+
+检查redis是否正常：/monitor/redisAlive
+
+获取一段时间报警的次数：/count/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}
+获取一段时间报警的明细：/getByTime/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}

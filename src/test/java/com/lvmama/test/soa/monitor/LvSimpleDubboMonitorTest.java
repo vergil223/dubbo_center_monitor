@@ -76,7 +76,7 @@ public class LvSimpleDubboMonitorTest extends BaseTest{
 	@Test
 	public void concurrentCollectProvider(){
 		ExecutorService threadPool = Executors.newFixedThreadPool(10);
-		for(int i=1;i<=100000;i++){
+		for(int i=1;i<=1000;i++){
 			threadPool.submit(new Runnable(){
 				@Override
 				public void run() {

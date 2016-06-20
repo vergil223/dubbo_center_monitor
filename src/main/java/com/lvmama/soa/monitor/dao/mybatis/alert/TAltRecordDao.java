@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.dao.mybatis.alert;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,5 +19,13 @@ public class TAltRecordDao extends BaseDao{
 	
 	public List<TAltRecord> selectList(Map params){
 		return this.getList("T_ALT_RECORD.selectList", params);
+	}
+	
+	public int deleteBeforeTime(Date insertTime){
+		return this.delete("T_ALT_RECORD.deleteBeforeTime", insertTime);
+	}
+	
+	public long count(Map params){
+		return this.get("T_ALT_RECORD.count", params);
 	}
 }

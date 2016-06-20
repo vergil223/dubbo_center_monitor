@@ -1,6 +1,10 @@
 package com.lvmama.soa.monitor.entity.alert;
 
-public class TAltAlert {
+public class TAltAlert implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id_;
 	private String target;
 	private String targetExclude;

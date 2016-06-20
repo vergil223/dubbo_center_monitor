@@ -1,6 +1,5 @@
 package com.lvmama.soa.monitor.util;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,8 +14,6 @@ public class MemcachedUtil {
 	private MemCachedClient memCachedClient;
 	
 	private static MemcachedUtil instance=new MemcachedUtil();
-	
-	
 	
 	private void init() {
 		try {
@@ -33,6 +30,7 @@ public class MemcachedUtil {
 			pool.setSocketTO(30000);
 			pool.setBufferSize(1024*1024*5);
 			pool.setAliveCheck(true);
+//			pool.setHashingAlg(SockIOPool.CONSISTENT_HASH);
 			pool.initialize(); /* 建立MemcachedClient实例 */
 			memCachedClient = new MemCachedClient("dataServer");
 		}
@@ -71,7 +69,21 @@ public class MemcachedUtil {
     
     public static Date getDateAfter(int second) {
         Calendar cal = Calendar.getInstance();
+        cal.setTime(DateUtil.now());
  		cal.add(Calendar.SECOND, second);
  		return cal.getTime();
  	}
+    
+    public boolean set(String key, int seconds, Object obj) {
+		boolean result = memCachedClient.set(key, obj, getDateAfter(seconds));
+		return result;
+	}
+    
+    public Object get(String key) {
+    	return memCachedClient.get(key);
+	}
+    
+    public boolean del(String key){
+    	return memCachedClient.delete(key);
+    }
 }

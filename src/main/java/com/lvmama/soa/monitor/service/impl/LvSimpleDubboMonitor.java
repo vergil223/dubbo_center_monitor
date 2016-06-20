@@ -11,6 +11,7 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.monitor.MonitorService;
 import com.lvmama.soa.monitor.cache.AppMinuteCache;
+import com.lvmama.soa.monitor.cache.MethodDayCache;
 import com.lvmama.soa.monitor.cache.MethodDayIPCache;
 import com.lvmama.soa.monitor.cache.ServiceDayIPCache;
 import com.lvmama.soa.monitor.entity.DubboMethodMinuteIP;
@@ -78,6 +79,7 @@ public class LvSimpleDubboMonitor implements LvDubboMonitor {
 				minute.setElapsedMax(Long.valueOf(statistics.getParameter(
 						MonitorService.MAX_ELAPSED, 0L)));
 
+				MethodDayCache.updateProviderCache(minute);
 				MethodDayIPCache.updateProviderCache(minute);
 				ServiceDayIPCache.updateProviderCache(minute);
 				AppMinuteCache.updateProviderAppCache(minute);

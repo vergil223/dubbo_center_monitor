@@ -2,8 +2,13 @@ package com.lvmama.soa.monitor.entity.alert;
 
 import java.util.Date;
 
-public class TAltRecord {
-    private Long id_;
+public class TAltRecord implements java.io.Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Long id_;
 
     private String appName;
 

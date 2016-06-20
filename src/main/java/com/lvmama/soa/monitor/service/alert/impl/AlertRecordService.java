@@ -24,4 +24,8 @@ public class AlertRecordService implements IAlertRecordService {
 	public List<TAltRecord> selectList(Map params){
 		return tAltRecordDao.selectList(params);
 	}
+	
+	public long count(Map params){
+		return tAltRecordDao.count(params);
+	}
 }
