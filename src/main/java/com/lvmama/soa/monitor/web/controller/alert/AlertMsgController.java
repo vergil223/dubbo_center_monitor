@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.web.controller.alert;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +10,14 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lvmama.soa.monitor.constant.Enabled;
 import com.lvmama.soa.monitor.constant.RestfulConst;
 import com.lvmama.soa.monitor.entity.alert.TAltAlert;
+import com.lvmama.soa.monitor.entity.alert.TAltRecord;
 import com.lvmama.soa.monitor.service.alert.IAlertRecordService;
 import com.lvmama.soa.monitor.service.alert.impl.AlertService;
 import com.lvmama.soa.monitor.util.DateUtil;
@@ -30,11 +34,18 @@ public class AlertMsgController {
 	@Autowired
 	private AlertService methodDayAlertService;
 	
+	@RequestMapping("/enableList")
+	@ResponseBody
+	public List<String> enableList(){
+		List<String> enableList = Arrays.asList(Enabled.Y,Enabled.N);
+		return enableList;
+	}
+	
 	@RequestMapping("/listAlert")
 	@ResponseBody
 	public List<TAltAlert> listAlert(){
-		List<TAltAlert> reslut = methodDayAlertService.findAllAlert();
-		return reslut;
+		List<TAltAlert> result = methodDayAlertService.findAllAlert();
+		return result;
 	}
 	
 	@RequestMapping("/getByTime/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}")
@@ -59,6 +70,36 @@ public class AlertMsgController {
 		}
 		return response.toJSON();
 		
+	}
+	
+	@RequestMapping("/queryAlertRecord/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}")
+	@ResponseBody
+	public List<TAltRecord> getAlertListByTime(@PathVariable String yyyyMMddHHmmssFrom, @PathVariable String yyyyMMddHHmmssTo,@RequestBody TAltRecord tAltRecordParam){
+		try{
+			Map<String,Object> params=new HashMap<String,Object>();
+			params.put("appName", tAltRecordParam.getAppName());
+			params.put("service", tAltRecordParam.getService());
+			params.put("method", tAltRecordParam.getMethod());
+			params.put("insertTime_from", DateUtil.parse(yyyyMMddHHmmssFrom));
+			params.put("insertTime_to", DateUtil.parse(yyyyMMddHHmmssTo));
+		
+			List<TAltRecord> result = iAlertRecordService.selectList(params);
+			
+			//TODO test
+			TAltRecord testRecored=new TAltRecord();
+			testRecored.setId_(-9L);
+			testRecored.setAppName("TA");
+			testRecored.setService("TS");
+			testRecored.setMethod("TM");
+			testRecored.setAlertMsg("Test message");
+			result.add(testRecored);
+			
+			
+			return result;
+		}catch(Exception e){
+			log.error("Error when getAlertListByTime,appName:["+tAltRecordParam.getService()+"], service:["+tAltRecordParam.getService()+"], method:["+tAltRecordParam.getMethod()+"] from:["+yyyyMMddHHmmssFrom+"] , to:["+yyyyMMddHHmmssTo+"]",e);
+			return null;
+		}
 	}
 	
 	@RequestMapping("/count/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}")

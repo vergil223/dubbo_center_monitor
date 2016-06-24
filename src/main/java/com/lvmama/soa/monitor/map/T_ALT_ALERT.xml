@@ -41,6 +41,18 @@
     delete from T_ALT_ALERT
     where ID_ = #{id,jdbcType=BIGINT}
   </delete>
+  
+  <delete id="batchDelete" parameterType="java.util.Map" >
+    delete from T_ALT_ALERT
+    where ID_ in (${ids})
+  </delete>
+  
+  <update id="batchUpdateEnabled" parameterType="java.util.Map" >
+    update T_ALT_ALERT
+    set ENABLED = #{enabled}
+    where ID_ in (${ids})
+  </update>
+  
   <insert id="insert" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" >
     insert into T_ALT_ALERT (ID_, TARGET, TARGET_EXCLUDE, 
       CONDITION_IDS, CONDITION_PARAM, ACTION_IDS, 
@@ -51,10 +63,10 @@
       #{actionParam,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{enabled,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" >
+  <insert id="save" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" useGeneratedKeys="true" keyProperty="id_">
     insert into T_ALT_ALERT
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="id_ != null" >
         ID_,
       </if>
       <if test="target != null" >
@@ -86,8 +98,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
+      <if test="id_ != null" >
+        #{id_,jdbcType=BIGINT},
       </if>
       <if test="target != null" >
         #{target,jdbcType=VARCHAR},
@@ -118,7 +130,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" >
+  <update id="update" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" >
     update T_ALT_ALERT
     <set >
       <if test="target != null" >
@@ -149,7 +161,7 @@
         ENABLED = #{enabled,jdbcType=VARCHAR},
       </if>
     </set>
-    where ID_ = #{id,jdbcType=BIGINT}
+    where ID_ = #{id_,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.lvmama.soa.monitor.entity.alert.TAltAlert" >
     update T_ALT_ALERT

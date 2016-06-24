@@ -12,4 +12,14 @@ public interface IAlertService {
 	public void alert(Map<String,Object> param);
 	
 	public List<TAltAlert> findAllAlert();
+	
+	public TAltAlert saveOrUpdate(TAltAlert tAltAlert);
+	
+	public int batchDelete(String ids);
+	
+	public int batchEnable(String ids);
+	
+	public int batchDisable(String ids);
+	
+	public TAltAlert loadById(Long id_);
 }

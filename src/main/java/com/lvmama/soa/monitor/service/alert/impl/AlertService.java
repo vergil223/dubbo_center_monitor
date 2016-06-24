@@ -38,7 +38,27 @@ public abstract class AlertService implements IAlertService {
 	
 	@Override
 	public List<TAltAlert> findAllAlert(){
-		return tAltAlertDao.findAllEnabledAlert();
+		return tAltAlertDao.findAllAlert();
+	}
+	
+	@Override
+	public TAltAlert saveOrUpdate(TAltAlert tAltAlert){
+		return tAltAlertDao.saveOrUpdate(tAltAlert);
+	}
+	
+	@Override
+	public int batchDelete(String ids){
+		return tAltAlertDao.batchDelete(ids);
+	}
+	
+	@Override
+	public int batchEnable(String ids){
+		return tAltAlertDao.batchEnable(ids);
+	}
+	
+	@Override
+	public int batchDisable(String ids){
+		return tAltAlertDao.batchDisable(ids);
 	}
 	
 	@Override
@@ -176,5 +196,10 @@ public abstract class AlertService implements IAlertService {
 			return null;
 		}
 
+	}
+	
+	@Override
+	public TAltAlert loadById(Long id_){
+		return tAltAlertDao.findById(id_);
 	}
 }

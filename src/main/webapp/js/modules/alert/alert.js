@@ -1,4 +1,4 @@
-var alert = angular.module('alert',['ngAnimate','ngRoute','queryFilter','breadCrumb','dialog','dubbokeeperFilters']);
+var alert = angular.module('alert',['ngAnimate','ngRoute','queryFilter','breadCrumb','dialog']);
 
 alert.config(function($routeProvider){
 	$routeProvider.when("/admin/router/:serviceKey/list",{
@@ -22,24 +22,24 @@ alert.config(function($routeProvider){
     }).when("/alert/list",{
         templateUrl:"templates/alert/alert_list.html",
         controller:"listAlert"
+    }).when("/alert/add",{
+        templateUrl:"templates/alert/alert_edit.html",
+        controller:"alertEdit"
+    }).when("/alert/edit/:id_",{
+        templateUrl:"templates/alert/alert_edit.html",
+        controller:"alertEdit"
+    }).when("/alert/getAlertMsg",{
+        templateUrl:"templates/alert/alertMsg_list.html",
+        controller:"listAlertMsg"
     }).otherwise("/alert/list");
 });
 
-alert.controller('listAlert', function ($scope,$httpWrapper,$routeParams,$queryFilter,$breadcrumb,$menu,$dialog) {
-    //$menu.switchMenu('alert/alert');
-    $breadcrumb.pushCrumb("预警规则概要列表","预警规则概要列表","listAlert");
+alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$queryFilter,$breadcrumb,$menu,$dialog) {
+    $menu.switchMenu('alert/getAlertMsg');
+    $breadcrumb.pushCrumb("预警记录","预警记录","listAlertMsg");
     $scope.details=[];
     $scope.isEmpty=false;
-    $httpWrapper.post({
-        url:"alert/listAlert",
-        success:function(data){
-            $scope.details=data;
-            if(!data||data.length<=0){
-                $scope.isEmpty=true;
-            }
-            $scope.originData=data;
-        }
-    });
+    
     $scope.query={};
     $scope.filter=function(){
         var filterResult=[];
@@ -47,6 +47,314 @@ alert.controller('listAlert', function ($scope,$httpWrapper,$routeParams,$queryF
             return ;
         }
         $scope.details=$queryFilter($scope.originData,$scope.query);
+    };
+    
+    $scope.refreshData=function(){
+    	var params={};
+    	if($scope.query.appName){
+    		params.appName=$scope.query.appName;
+		}
+		if($scope.query.service){
+			params.service=$scope.query.service;
+		}
+		if($scope.query.method){
+			params.method=$scope.query.method;
+		}
+		
+		$httpWrapper.post({
+			url:"alert/queryAlertRecord/"+$scope.insertTimeFrom+"/"+$scope.insertTimeTo,
+			data:params,
+			success:function(data){
+				$scope.details=data;
+				if(!data||data.length<=0){
+					$scope.isEmpty=true;
+				}
+				$scope.originData=data;
+			}
+		}); 
+		
+    };
+});
+
+alert.controller('listAlert', function ($scope,$httpWrapper,$routeParams,$queryFilter,$breadcrumb,$menu,$dialog) {
+    $menu.switchMenu('alert/alert');
+    $breadcrumb.pushCrumb("预警规则概要列表","预警规则概要列表","listAlert");
+    $scope.details=[];
+    $scope.isEmpty=false;
+    
+    var refreshData=function(){
+    		$httpWrapper.post({
+    			url:"alertConf/listAlert",
+    			success:function(data){
+    				$scope.details=data;
+    				if(!data||data.length<=0){
+    					$scope.isEmpty=true;
+    				}
+    				$scope.originData=data;
+    			}
+    		});    		
+    };
+    refreshData();
+    
+    $httpWrapper.post({
+        url:"alertConf/enableList",
+        success:function(data){
+            $scope.enableList=data;
+        }
+    });
+    
+    $scope.query={};
+    $scope.filter=function(){
+        var filterResult=[];
+        if($scope.isEmpty){
+            return ;
+        }
+        $scope.details=$queryFilter($scope.originData,$scope.query);
+    };
+    
+    var operateType={
+            'delete':"删除",
+            'enable':'启用',
+            'disable':'禁用'
+    }
+    
+    $scope.operate=function(type,item){
+        $dialog.confirm({
+            content:"确认要"+operateType[type]+"吗?",
+            size:"small",
+            callback: function () {
+                $httpWrapper.post({
+                    url:"alertConf/"+type+"/"+item.id_,
+                    success: function (data) {
+                            $dialog.info({content:data, size:"small"});
+                            refreshData();
+                    }
+                });
+            }
+        });
+
+    }
+    
+    $scope.batchOperation=function(type){
+        var selected=[];
+        for(var i=0;i<$scope.details.length;i++){
+            if($scope.details[i].checked){
+                selected.push($scope.details[i].id_);
+            }
+        }
+        if(selected.length<=0){
+            $dialog.info({
+                content:"请选择操作项！",
+                size:"small"
+            });
+            return ;
+        }
+        var operationName = "";
+        if('Delete'==type){
+            operationName="删除";
+        }else if('Disable'==type){
+            operationName='禁用';
+        }else if('Enable'==type){
+            operationName='启用';
+        }
+        $dialog.confirm({
+            content:"确认批量"+operationName+"路由规则吗?",
+            size:"small",
+            callback:function(){
+                $httpWrapper.post({
+                    url:"alertConf/batch"+type,
+                    data:"ids="+selected.join(","),
+                    config:{ headers: { 'Content-Type': 'application/x-www-form-urlencoded'}},
+                    success: function (data) {
+                            $dialog.info({
+                                content:data,
+                                size:"small",
+                                callback:function(){
+                                    refreshData();
+                                }
+                            });
+                    }
+                });
+            }
+        });
+    }
+});
+
+alert.controller('alertEdit',function($scope,$httpWrapper,$routeParams,$queryFilter,$breadcrumb,$menu,$dialog){
+    $menu.switchMenu('alert/alert');
+    $breadcrumb.pushCrumb("新增预警规则","新增预警规则","alertEdit");
+    $scope.service=decodeURIComponent($routeParams.serviceKey);
+    $scope.id_=$routeParams.id_;
+    $scope.item={};
+    $scope.item.id=$scope.id_;
+    $httpWrapper.post({
+        url:"alertConf/enableList",
+        success:function(data){
+            $scope.enableList=data;
+        }
+    });
+    
+    if($scope.id_){
+        $httpWrapper.post({
+            url:"alertConf/loadById/"+$scope.id_,
+            success: function (data) {
+                $scope.item=data;
+            }
+        });
+    }
+    
+    var parseRule=function(rules){
+        rules = rules.trim();
+        rules = rules.split("&");
+        var ruleArray = [];
+        for(var i=0;i<rules.length;i++){
+            var rule = rules[i];
+            var ruleObj={};
+            var index=0;
+            if((index=rule.indexOf("!="))>0){
+                ruleObj.condition=rule.substring(0,index).trim();
+                ruleObj.rule="!=";
+                ruleObj.value=rule.substring(index+2);
+            }else{
+                index=rule.indexOf("=");
+                ruleObj.condition=rule.substring(0,index).trim();
+                ruleObj.rule="=";
+                ruleObj.value=rule.substring(index+1);
+            }
+            ruleArray.push(ruleObj);
+        }
+        return ruleArray;
+    }
+    $scope.whenConditions=[{
+        val:'consumer.host',
+        text:"消费者IP地址"
+    },{
+        val:'consumer.application',
+        text:"消费者应用名"
+    },{
+        val:'consumer.version',
+        text:"消费者版本"
+    },{
+        val:'consumer.cluster',
+        text:'消费者集群'
+    }];
+    $scope.rules=[{
+        val:'=',
+        text:"匹配"
+    },{
+        val:'!=',
+        text:"不匹配"
+    }];
+    var ipPattern = "^(([1-9]{1}[0-9]{0,2}[\\.]{1}){3}(([1-9]{1}[0-9]{0,2})|[\\*]{1}){1}){1}([,]{1}(([1-9]{1}[0-9]{0,2}[\\.]{1}){3}(([1-9]{1}[0-9]{0,2})|[\\*]{1}){1}){1}){0,}$";
+    var textPattern = "^[a-zA-Z0-9-_]{1,}$";
+    var numPattern = "^[1-9]{1}[0-9]{0,}$";
+    var whenConditions={
+        "consumer.host":{
+            title:'输的地址可以是ip段(192.168.0.*)也可以可是具体ip地址，多个通过逗号分隔开',
+            pattern:ipPattern
+        },
+        "consumer.application":{
+            title:"请输入消费端app名称",
+            pattern:textPattern
+        },
+        "consumer.version":{
+            title:"请输入消费端版本",
+            pattern:textPattern
+        },
+        "consumer.cluster":{
+            title:"请输入消费端的集群名",
+            pattern:textPattern
+        }
+    };
+    $scope.thenConditions=[{
+        val:'provider.host',
+        text:"提供者IP地址"
+    },{
+        val:'provider.cluster',
+        text:"提供者集群"
+    },{
+        val:'provider.protocol',
+        text:"提供者协议"
+    },{
+        val:'provider.version',
+        text:"提供者版本号"
+    },{
+        val:'provider.port',
+        text:"提供者端口"
+    }];
+    var thenConditions={
+        "provider.host":{
+            title:'输的地址可以是ip段(192.168.0.*)也可以可是具体ip地址，多个通过逗号分隔开',
+            pattern:ipPattern
+        },
+        "provider.application":{
+            title:"请输入提供者的app名称",
+            pattern:textPattern
+        },
+        "provider.protocol":{
+            title:"请输入提供者的协议",
+            pattern:textPattern
+        },
+        "provider.port":{
+            title:"提供者端口必须是整型",
+            pattern:numPattern
+        },
+        "provider.version":{
+            title:"请输入提供者的版本",
+            pattern:textPattern
+        }
+    };
+    $scope.save=function(){
+        $httpWrapper.post({
+            url:"alertConf/save",
+            data:$scope.item,
+            success: function (data) {
+                	$scope.id_=data.id_;
+                	$scope.item.id_=data.id_;
+                    $dialog.info({
+                        content:"预警规则保存成功,ID="+$scope.item.id_,
+                        size:"small"
+                    });
+            }
+        });
+    }
+    
+    $scope.selectMethod=function(){
+        if(!$scope.item.method){
+            if($scope.selectedMethod&&$scope.selectedMethod!=""){
+                $scope.item.method=$scope.selectedMethod;
+            }
+        }else{
+            if($scope.selectedMethod&&$scope.selectedMethod!=""){
+                $scope.item.method=$scope.item.method+","+$scope.selectedMethod;
+            }
+        }
+
+
+    }
+    $scope.switchTab=function(tabName){
+        $scope.currentTab=tabName;
+    }
+
+    $scope.switchTab('when');
+    $scope.addWhen= function () {
+        $scope.whenList.push({condition:'consumer.host',rule:'=',value:''});
+    };
+    $scope.addThen= function () {
+        $scope.thenList.push({condition:'provider.host',rule:'=',value:''});
+    };
+
+    $scope.removeWhen=function(index){
+        var newArray=[];
+        newArray=newArray.concat($scope.whenList.slice(0,index));
+        newArray=newArray.concat($scope.whenList.slice(index+1));
+        $scope.whenList=newArray;
+    }
+    $scope.removeThen=function(index){
+        var newArray=[];
+        newArray=newArray.concat($scope.thenList.slice(0,index));
+        newArray=newArray.concat($scope.thenList.slice(index+1));
+        $scope.thenList=newArray;
     }
 });
 

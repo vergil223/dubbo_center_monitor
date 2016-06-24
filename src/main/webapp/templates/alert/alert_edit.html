@@ -1,0 +1,92 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="icon-random"></i> <span ng-show="!id_">新增预警规则</span><span ng-show="id_">编辑预警规则</span>
+    </div>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <form name="alertForm">
+            	<input type="hidden" ng-model="item.id_" />
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">名称：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control" type="text" ng-model="item.name" required placeholder="预警规则名称">
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">可使用中文</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">目标：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text" required   ng-model="item.target" placeholder="目标">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">排除目标：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text"    ng-model="item.targetExclude" placeholder="排除目标">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">Condition IDs：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text" required   ng-model="item.conditionIds" placeholder="Condition IDs">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">多个ID用,分隔</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">Condition参数：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text"    ng-model="item.conditionParam" placeholder="Condition参数">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">Action IDs：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text" required   ng-model="item.actionIds" placeholder="Action IDs">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">多个ID用,分隔</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">Action参数：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text"    ng-model="item.actionParam" placeholder="Action参数">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">说明：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+                        <input  class="form-control"  type="text"    ng-model="item.description" placeholder="Action参数">
+
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+                <div class="row form-group  form-group-sm">
+                    <label class="col-md-1 col-sm-1 col-xs-1 col-lg-1 control-label">是否启用：</label>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 ">
+						<select ng-model="item.enabled"  class="form-control"  ng-change="selectMethod()">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option ng-repeat="o in enableList" value="{{o}}" ng-selected="selectedEnable==o">{{o}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7 col-lg-7">（注释）</div>
+                </div>
+
+                <div class="row form-group form-group-sm">
+                    <div class="col-md-2 col-sm-2 col-xs-2 col-lg-2">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="save()"  ng-disabled="alertForm.$invalid"><i class="icon-ok"></i> 保存</button>
+                        <a href="#/alert/list"><button type="button" class="btn btn-success btn-sm" ><i class="icon-ok"></i> 返回</button></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

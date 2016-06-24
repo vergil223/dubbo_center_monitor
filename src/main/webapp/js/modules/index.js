@@ -3,7 +3,7 @@ dubbokeeper.controller("dubbokeeperCtrl",function($scope,$dkContext){
     $dkContext._init($scope);
     $scope.currentHome={};
 });
-dubbokeeper.barDataset=[{
+dubbokeeper.barDataset=[/*{
     barShowName:"Dashboard",
     barIdentify:"dashboard",
     barHref:"/statistics",
@@ -53,7 +53,7 @@ dubbokeeper.barDataset=[{
     barIdentify:"aboutus",
     barHref:"/aboutus",
     barIconClass:"icon-bookmark"
-},{
+},*/{
     barShowName:"Alert",
     barIdentify:"alert",
     barHref:"/alert/list",
@@ -63,7 +63,14 @@ dubbokeeper.barDataset=[{
         identify:"alert/alert",
         href:"/alert/list",
         icon:"icon-bar-chart",
-    }]
+    },
+    {
+        showName:"预警记录",
+        identify:"alert/getAlertMsg",
+        href:"/alert/getAlertMsg",
+        icon:"icon-bar-chart",
+    }
+    ]
 }];
 dubbokeeper.$dkContext= function () {
     var dubboKeeperContext = function () {

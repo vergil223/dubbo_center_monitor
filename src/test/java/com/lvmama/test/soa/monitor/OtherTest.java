@@ -8,12 +8,17 @@ import com.lvmama.soa.monitor.util.MemcachedUtil;
 
 public class OtherTest {
 	public static void main(String args[])throws Exception{
+		long a=10;
+		long b=3;
+		long c=a/b;
+		System.out.println(a/b);
+		
 //		System.out.println(MemcachedUtil.getInstance().get("ALERT_TEST_com.lvmama.test.soa.monitor.AlertTesttestMethodDayIPSuccessTimesAlert20160605"));
 		
-		List<DubboMethodDay> dubboMethodDayList=CacheUtil.getArray("ALERT_TEST_com.lvmama.test.soa.monitor.AlertTesttestMethodDayIPSuccessTimesAlert20160605", DubboMethodDay.class);
-		DubboMethodDay day=dubboMethodDayList.get(0);
-		System.out.println(day);
-		System.out.println(day.getSuccessTimesDetail());
+//		List<DubboMethodDay> dubboMethodDayList=CacheUtil.getArray("ALERT_TEST_com.lvmama.test.soa.monitor.AlertTesttestMethodDayIPSuccessTimesAlert20160605", DubboMethodDay.class);
+//		DubboMethodDay day=dubboMethodDayList.get(0);
+//		System.out.println(day);
+//		System.out.println(day.getSuccessTimesDetail());
 //		StringBuilder sql=new StringBuilder();
 //		sql.append(" INSERT INTO                        ");
 //		sql.append(" 		DUBBO_METHOD_DAY_IP (           ");

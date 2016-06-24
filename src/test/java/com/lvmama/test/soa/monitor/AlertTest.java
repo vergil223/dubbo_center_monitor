@@ -17,10 +17,12 @@ import com.lvmama.soa.monitor.cache.MethodDayCache;
 import com.lvmama.soa.monitor.cache.MethodDayIPCache;
 import com.lvmama.soa.monitor.dao.redis.JedisTemplate;
 import com.lvmama.soa.monitor.entity.DubboMethodMinuteIP;
+import com.lvmama.soa.monitor.entity.alert.TAltAlert;
 import com.lvmama.soa.monitor.entity.alert.TAltRecord;
 import com.lvmama.soa.monitor.service.DubboMethodDayIPService;
 import com.lvmama.soa.monitor.service.DubboMethodDayService;
 import com.lvmama.soa.monitor.service.alert.IAlertRecordService;
+import com.lvmama.soa.monitor.service.alert.IAlertService;
 import com.lvmama.soa.monitor.util.DateUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,6 +41,9 @@ public class AlertTest extends BaseTest{
 	private DubboMethodDayIPService dubboMethodDayIPService;
 	@Autowired
 	private DubboMethodDayService dubboMethodDayService;
+	
+	@Autowired
+	private IAlertService methodDayAlertService;
 	
 	@Autowired
 	private IAlertRecordService iAlertRecordService;
@@ -256,6 +261,24 @@ public class AlertTest extends BaseTest{
 		params.put("insertTime_to",   DateUtil.parse("20160526230000"));
 	
 		System.out.println("******************"+iAlertRecordService.count(params));
+	}
+	
+	@Test
+	public void testSaveOrUpdateAlert(){
+		TAltAlert tAltAlert=new TAltAlert();
+		tAltAlert.setActionIds("1");
+		tAltAlert.setActionParam("actionParam:a");
+		tAltAlert.setConditionIds("1");
+		tAltAlert.setConditionParam("conditionParam:b");
+		tAltAlert.setDescription("DESC");
+		tAltAlert.setEnabled("N");
+		tAltAlert.setName("test Alert 20160623");
+		tAltAlert.setTarget(".*");
+		tAltAlert.setTargetExclude("*ExludeService*");
+		
+		methodDayAlertService.saveOrUpdate(tAltAlert);
+		
+		System.out.println(tAltAlert.getId_());
 	}
 	
 }

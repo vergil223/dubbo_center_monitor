@@ -98,7 +98,15 @@ public class MethodSuccessTimesWithOtherDaysCondition extends AbstractCondition 
 					if(alertMsgList==null){
 						alertMsgList=new ArrayList<String>();
 					}
-					alertMsgList.add("The success times is "+percentIncrease+" times bigger than the average data of the same minute in pervious "+daysToCompare+" days. App:["+day.getAppName()+"], service:["+day.getService()+"], method:["+day.getMethod()+"], current time:["+DateUtil.changeHHmm(baseDate, hhmmFrom)  +"], current successTimes:["+avgSuccessTimesCur+"]");
+					
+					BigDecimal divideResult=null;
+					if(avgSuccessTimesForCompare==0){
+						divideResult=new BigDecimal(999);
+					}else{
+						divideResult = new BigDecimal(avgSuccessTimesCur).divide(BigDecimal.valueOf(avgSuccessTimesForCompare), 1, BigDecimal.ROUND_HALF_UP);						
+					}
+					
+					alertMsgList.add("The success times is "+divideResult+" times bigger than the average data of the same minute in pervious "+daysToCompare+" days ("+avgSuccessTimesForCompare+">"+avgSuccessTimesCur+"). App:["+day.getAppName()+"], service:["+day.getService()+"], method:["+day.getMethod()+"], current time:["+DateUtil.changeHHmm(baseDate, hhmmFrom)  +"], current successTimes:["+avgSuccessTimesCur+"]");
 					param.put(AlertParamKey.ALERT_MSG, alertMsgList);
 					
 					return true;									

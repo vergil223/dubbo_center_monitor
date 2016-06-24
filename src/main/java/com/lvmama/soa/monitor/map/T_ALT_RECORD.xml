@@ -31,25 +31,25 @@
        and ID_=#{id_,jdbcType=BIGINT}
       </if>
       <if test="appName != null" >
-        APP_NAME = #{appName,jdbcType=VARCHAR},
+        and APP_NAME = #{appName,jdbcType=VARCHAR}
       </if>
       <if test="service != null" >
-        SERVICE = #{service,jdbcType=VARCHAR},
+        and SERVICE = #{service,jdbcType=VARCHAR}
       </if>
       <if test="method != null" >
-        METHOD = #{method,jdbcType=VARCHAR},
+        and METHOD = #{method,jdbcType=VARCHAR}
       </if>
       <if test="consumerIp != null" >
-        CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+        and CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR}
       </if>
       <if test="providerIp != null" >
-        PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+        and PROVIDER_IP = #{providerIp,jdbcType=VARCHAR}
       </if>
       <if test="insertTime != null" >
-        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+        and INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP}
       </if>
       <if test="alertMsg != null" >
-        ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR},
+        and ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR}
       </if>
       <if test="insertTime_from != null" >
       	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
@@ -124,25 +124,25 @@
        and ID_=#{id_,jdbcType=BIGINT}
       </if>
       <if test="appName != null" >
-        APP_NAME = #{appName,jdbcType=VARCHAR},
+        and APP_NAME = #{appName,jdbcType=VARCHAR}
       </if>
       <if test="service != null" >
-        SERVICE = #{service,jdbcType=VARCHAR},
+        and SERVICE = #{service,jdbcType=VARCHAR}
       </if>
       <if test="method != null" >
-        METHOD = #{method,jdbcType=VARCHAR},
+        and METHOD = #{method,jdbcType=VARCHAR}
       </if>
       <if test="consumerIp != null" >
-        CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR},
+        and CONSUMER_IP = #{consumerIp,jdbcType=VARCHAR}
       </if>
       <if test="providerIp != null" >
-        PROVIDER_IP = #{providerIp,jdbcType=VARCHAR},
+        and PROVIDER_IP = #{providerIp,jdbcType=VARCHAR}
       </if>
       <if test="insertTime != null" >
-        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+        and INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP}
       </if>
       <if test="alertMsg != null" >
-        ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR},
+        and ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR}
       </if>
       <if test="insertTime_from != null" >
       	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
