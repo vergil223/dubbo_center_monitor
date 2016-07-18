@@ -57,6 +57,21 @@
       <if test="insertTime_to != null" >
       	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
       </if>
+      <if test="alertMsg != null" >
+        and ALERT_MSG like '%${alertMsg,jdbcType=LONGVARCHAR}'
+      </if>
+      
+      <if test="sortBy!=null">
+      	<if test="sortType!=null">
+      		order by ${sortBy} ${sortType}
+      	</if>
+      </if>
+      
+      <if test="pageSize!=null">
+      	<if test="limitFrom!=null">
+      		limit ${limitFrom},${pageSize}
+      	</if>
+      </if>
   </select>
   
   
@@ -149,6 +164,9 @@
       </if>
       <if test="insertTime_to != null" >
       	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
+      </if>
+      <if test="alertMsg != null" >
+        and ALERT_MSG like '%${alertMsg,jdbcType=LONGVARCHAR}'
       </if>
   </select>
   

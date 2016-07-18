@@ -2,7 +2,9 @@ package com.lvmama.soa.monitor.entity.alert;
 
 import java.util.Date;
 
-public class TAltRecord implements java.io.Serializable{
+import com.lvmama.soa.monitor.entity.Pagination;
+
+public class TAltRecord extends Pagination implements java.io.Serializable{
     /**
 	 * 
 	 */

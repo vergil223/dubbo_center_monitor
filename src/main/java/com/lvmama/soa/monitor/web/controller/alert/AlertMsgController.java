@@ -21,6 +21,7 @@ import com.lvmama.soa.monitor.entity.alert.TAltRecord;
 import com.lvmama.soa.monitor.service.alert.IAlertRecordService;
 import com.lvmama.soa.monitor.service.alert.impl.AlertService;
 import com.lvmama.soa.monitor.util.DateUtil;
+import com.lvmama.soa.monitor.web.vo.PageResult;
 import com.lvmama.soa.monitor.web.vo.restful.Response;
 
 @Controller
@@ -72,9 +73,9 @@ public class AlertMsgController {
 		
 	}
 	
-	@RequestMapping("/queryAlertRecord/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}")
+	@RequestMapping("/queryAlertRecord/{yyyyMMddHHmmssFrom}/{yyyyMMddHHmmssTo}/{sortBy}/{sortType}")
 	@ResponseBody
-	public List<TAltRecord> getAlertListByTime(@PathVariable String yyyyMMddHHmmssFrom, @PathVariable String yyyyMMddHHmmssTo,@RequestBody TAltRecord tAltRecordParam){
+	public PageResult<TAltRecord> getAlertListByTime(@PathVariable String yyyyMMddHHmmssFrom, @PathVariable String yyyyMMddHHmmssTo, @PathVariable String sortBy,@PathVariable String sortType,@RequestBody TAltRecord tAltRecordParam){
 		try{
 			Map<String,Object> params=new HashMap<String,Object>();
 			params.put("appName", tAltRecordParam.getAppName());
@@ -82,20 +83,22 @@ public class AlertMsgController {
 			params.put("method", tAltRecordParam.getMethod());
 			params.put("insertTime_from", DateUtil.parse(yyyyMMddHHmmssFrom));
 			params.put("insertTime_to", DateUtil.parse(yyyyMMddHHmmssTo));
+			params.put("currentPage", tAltRecordParam.getCurrentPage());
+			params.put("pageSize", tAltRecordParam.getPageSize());
+			params.put("limitFrom", tAltRecordParam.getLimitFrom());
+			params.put("sortBy",sortBy);
+			params.put("sortType",sortType);
 		
-			List<TAltRecord> result = iAlertRecordService.selectList(params);
-			
-			//TODO test
-			TAltRecord testRecored=new TAltRecord();
-			testRecored.setId_(-9L);
-			testRecored.setAppName("TA");
-			testRecored.setService("TS");
-			testRecored.setMethod("TM");
-			testRecored.setAlertMsg("Test message");
-			result.add(testRecored);
-			
-			
-			return result;
+			PageResult pageResult=new PageResult<TAltRecord>();
+			long totalCount=iAlertRecordService.count(params);
+			pageResult.setTotalCount(totalCount);
+						
+			if(totalCount>0){
+				List<TAltRecord> result = iAlertRecordService.selectList(params);				
+				pageResult.setResultList(result);
+			}
+						
+			return pageResult;
 		}catch(Exception e){
 			log.error("Error when getAlertListByTime,appName:["+tAltRecordParam.getService()+"], service:["+tAltRecordParam.getService()+"], method:["+tAltRecordParam.getMethod()+"] from:["+yyyyMMddHHmmssFrom+"] , to:["+yyyyMMddHHmmssTo+"]",e);
 			return null;

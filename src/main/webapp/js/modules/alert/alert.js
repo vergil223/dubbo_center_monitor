@@ -1,4 +1,4 @@
-var alert = angular.module('alert',['ngAnimate','ngRoute','queryFilter','breadCrumb','dialog']);
+var alert = angular.module('alert',['ngAnimate','ngRoute','queryFilter','breadCrumb','dialog','dateRangePicker','angularUtils.directives.dirPagination']);
 
 alert.config(function($routeProvider){
 	$routeProvider.when("/admin/router/:serviceKey/list",{
@@ -40,6 +40,17 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
     $scope.details=[];
     $scope.isEmpty=false;
     
+    $scope.totalCount=0;
+    $scope.pageSize=6;
+    $scope.pagination = {
+            last: 1,
+            current: 1
+    };
+    
+    $scope.timeRange={};
+    $scope.timeRange.startTime=new Date().getTime();
+    $scope.timeRange.endTime=new Date().getTime();
+    
     $scope.query={};
     $scope.filter=function(){
         var filterResult=[];
@@ -49,7 +60,24 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
         $scope.details=$queryFilter($scope.originData,$scope.query);
     };
     
-    $scope.refreshData=function(){
+    var numberFormat=function(number){
+        if(number<10){
+            return "0"+number;
+        }
+        return number+"";
+    }
+    
+    $scope.sortKey = "INSERT_TIME";   
+	$scope.reverse = false; 
+    
+    $scope.sort = function(keyname){
+		$scope.sortKey = keyname;   //set the sortKey to the param passed
+		$scope.reverse = !$scope.reverse; //if true make it false and vice versa
+		doRefreshData();
+	}
+    
+    var doRefreshData=function(){
+
     	var params={};
     	if($scope.query.appName){
     		params.appName=$scope.query.appName;
@@ -60,20 +88,48 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
 		if($scope.query.method){
 			params.method=$scope.query.method;
 		}
+		if($scope.pageSize){
+			params.pageSize=$scope.pageSize;			
+		}
+		if($scope.pagination.current){
+			params.currentPage=$scope.pagination.current;
+		}
 		
+		var initStartDate = new Date($scope.timeRange.startTime);
+        var initEndDate = new Date($scope.timeRange.endTime);
+        var timeFrom = initStartDate.getFullYear()+numberFormat(initStartDate.getMonth()+1)+numberFormat(initStartDate.getDate())+numberFormat(initStartDate.getHours())+numberFormat(initStartDate.getMinutes())+"00";
+        var timeTo = initEndDate.getFullYear()+numberFormat(initEndDate.getMonth()+1)+numberFormat(initEndDate.getDate())+numberFormat(initEndDate.getHours())+numberFormat(initEndDate.getMinutes())+"00";
+        
+//      $scope.sortKey = keyname;   //set the sortKey to the param passed
+//		$scope.reverse = !$scope.reverse;
+        var sortBy=$scope.sortKey;
+        var sortType="asc";
+        if($scope.reverse){
+        	sortType="desc";
+        }
+        
 		$httpWrapper.post({
-			url:"alert/queryAlertRecord/"+$scope.insertTimeFrom+"/"+$scope.insertTimeTo,
+			url:"alert/queryAlertRecord/"+timeFrom+"/"+timeTo+"/"+sortBy+"/"+sortType,
 			data:params,
 			success:function(data){
-				$scope.details=data;
-				if(!data||data.length<=0){
+				$scope.details=data.resultList;
+				if(!data.resultList||data.resultList.length<=0){
 					$scope.isEmpty=true;
 				}
-				$scope.originData=data;
+				$scope.originData=data.resultList;
+				$scope.totalCount=data.totalCount;
 			}
 		}); 
-		
+    }
+    
+    $scope.onPageChange=function(newPageNumber){
+    	doRefreshData();
+    }
+    
+    $scope.refreshData=function(){
+    	doRefreshData();
     };
+    
 });
 
 alert.controller('listAlert', function ($scope,$httpWrapper,$routeParams,$queryFilter,$breadcrumb,$menu,$dialog) {

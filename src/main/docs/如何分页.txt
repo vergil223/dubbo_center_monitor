@@ -1,0 +1,101 @@
+页面参考：alertMsg_list.html
+AngularJS controller: alert.js里的alert.listAlertMsg
+
+【前提】
+引入分页控件的AngularJS模块：
+var alert = angular.module('alert',['ngAnimate','ngRoute','queryFilter','breadCrumb','dialog','dateRangePicker','angularUtils.directives.dirPagination']);
+
+angularJS业务controller里需要定义JS的分页对象：
+    $scope.pagination = {
+            last: 1,
+            current: 1
+    };
+【排序】
+<th ng-click="sort('APP_NAME')">appName
+										<span class="glyphicon sort-icon" ng-show="sortKey=='APP_NAME'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+										<input type="text" class="inner-form-element" ng-model="query.appName" ng-change="filter()" placeholder="输入应用名">
+									</th>
+
+controller要定义排序属性和排序方法，并实现sort方法：
+$scope.sortKey = "INSERT_TIME";   
+$scope.reverse = false; 
+    
+$scope.sort = function(keyname){
+	$scope.sortKey = keyname;   //set the sortKey to the param passed
+	$scope.reverse = !$scope.reverse; //if true make it false and vice versa
+	doRefreshData();
+}
+
+
+【详细列表】
+<tr dir-paginate="detail in details|itemsPerPage:pageSize" total-items="{{totalCount}}">
+	<td class="text-left td-20-width">{{detail.appName}}</td>
+        <td class="text-left td-25-width">{{detail.service}}</td>
+        <td class="text-left td-25-width">{{detail.method}}</td>
+        <td class="text-left td-25-width">{{detail.alertMsg}}</td>
+        <td class="text-left td-25-width">{{detail.insertTime|date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
+</tr>
+
+其中itemsPerPage是每页记录数，total-items是总记录数。这两个属性需要在angularJS业务controller里定义，并且随着查询条件而变化：
+$scope.totalCount=0;
+$scope.pageSize=6;
+
+【页数导航栏】
+<dir-pagination-controls
+					max-size="10"
+					direction-links="true"
+					boundary-links="true"
+					on-page-change="onPageChange(newPageNumber)"
+					pagination="pagination" >
+				</dir-pagination-controls>
+
+on-page-change是改变页数时触发的方法：
+$scope.onPageChange=function(newPageNumber){
+    	doRefreshData();
+}
+
+var doRefreshData=function(){
+    	var params={};
+    	if($scope.query.appName){
+    		params.appName=$scope.query.appName;
+		}
+		if($scope.query.service){
+			params.service=$scope.query.service;
+		}
+		if($scope.query.method){
+			params.method=$scope.query.method;
+		}
+		if($scope.pageSize){
+			params.pageSize=$scope.pageSize;			
+		}
+		if($scope.pagination.current){
+			params.currentPage=$scope.pagination.current;
+		}
+		
+	var initStartDate = new Date($scope.timeRange.startTime);
+        var initEndDate = new Date($scope.timeRange.endTime);
+        var timeFrom = initStartDate.getFullYear()+numberFormat(initStartDate.getMonth()+1)+numberFormat(initStartDate.getDate())+numberFormat(initStartDate.getHours())+numberFormat(initStartDate.getMinutes())+"00";
+        var timeTo = initEndDate.getFullYear()+numberFormat(initEndDate.getMonth()+1)+numberFormat(initEndDate.getDate())+numberFormat(initEndDate.getHours())+numberFormat(initEndDate.getMinutes())+"00";
+        
+        var sortBy=$scope.sortKey;
+        var sortType="asc";
+        if($scope.reverse){
+        	sortType="desc";
+        }
+        
+		$httpWrapper.post({
+			url:"alert/queryAlertRecord/"+timeFrom+"/"+timeTo+"/"+sortBy+"/"+sortType,
+			data:params,
+			success:function(data){
+				$scope.details=data.resultList;
+				if(!data.resultList||data.resultList.length<=0){
+					$scope.isEmpty=true;
+				}
+				$scope.originData=data.resultList;
+				$scope.totalCount=data.totalCount;
+			}
+		}); 
+    }
+
+
+
