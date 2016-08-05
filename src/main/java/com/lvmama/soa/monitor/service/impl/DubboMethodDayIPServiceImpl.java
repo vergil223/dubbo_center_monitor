@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,10 +73,13 @@ public class DubboMethodDayIPServiceImpl implements DubboMethodDayIPService {
 			return 0;
 		}
 
-		if(oldDay.getSuccessTimes()>0||day.getSuccessTimes()>0){
-			oldDay.setElapsedAvg((oldDay.getSuccessTimes() * oldDay.getElapsedAvg() + day
-					.getSuccessTimes() * day.getElapsedAvg())
-					/ (oldDay.getSuccessTimes() + day.getSuccessTimes()));
+		if (oldDay.getSuccessTimes() > 0 || day.getSuccessTimes() > 0) {
+			oldDay.setElapsedAvg((BigDecimal.valueOf(oldDay.getSuccessTimes())
+					.multiply(oldDay.getElapsedAvg()).add(BigDecimal.valueOf(
+					day.getSuccessTimes()).multiply(day.getElapsedAvg())))
+					.divide(BigDecimal.valueOf(oldDay.getSuccessTimes()
+							+ day.getSuccessTimes()), 4,
+							BigDecimal.ROUND_HALF_UP));
 		}
 		oldDay.setSuccessTimes(oldDay.getSuccessTimes() + day.getSuccessTimes());
 		oldDay.setFailTimes(oldDay.getFailTimes() + day.getFailTimes());

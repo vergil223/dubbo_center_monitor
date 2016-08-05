@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,7 +60,7 @@ public class LvSimpleDubboMonitor implements LvDubboMonitor {
 				DubboMethodMinuteIP minute = new DubboMethodMinuteIP();
 
 				minute.setTime(now);
-				minute.setAppName(statistics.getParameter("appName"));
+				minute.setAppName(statistics.getParameter("application",statistics.getParameter("appName")));
 				minute.setService(statistics.getServiceInterface());
 				minute.setMethod(statistics.getParameter(MonitorService.METHOD));
 				String consumerIP = statistics.getParameter(MonitorService.CONSUMER);
@@ -74,7 +75,7 @@ public class LvSimpleDubboMonitor implements LvDubboMonitor {
 						MonitorService.SUCCESS, 0L)));
 				minute.setFailTimes(Long.valueOf(statistics.getParameter(
 						MonitorService.FAILURE, 0L)));
-				minute.setElapsedTotal(Long.valueOf(statistics.getParameter(
+				minute.setElapsedTotal(BigDecimal.valueOf(statistics.getParameter(
 						MonitorService.ELAPSED, 0L)));
 				minute.setElapsedMax(Long.valueOf(statistics.getParameter(
 						MonitorService.MAX_ELAPSED, 0L)));

@@ -1,5 +1,6 @@
 package com.lvmama.test.soa.monitor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +71,7 @@ public class DataMockTest extends BaseTest{
 			day.setTime(time);
 			day.setSuccessTimes(10L);
 			day.setFailTimes(1L);
-			day.setElapsedAvg(2L);
+			day.setElapsedAvg(BigDecimal.valueOf(2L));
 			day.setElapsedMax(5L);
 			day.setSuccessTimesDetail("1031 10");
 			day.setFailTimesDetail("1031 1");

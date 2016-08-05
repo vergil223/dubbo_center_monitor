@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.lvmama.soa.monitor.util.DateUtil;
@@ -14,7 +15,7 @@ public class DubboServiceDayIP implements Shardable{
 	private Date time;
 	private Long successTimes=0L;
 	private Long failTimes=0L;
-	private Long elapsedAvg=0L;
+	private BigDecimal elapsedAvg=BigDecimal.ZERO;
 	private Long elapsedMax=0L;
 	private String successTimesDetail="";
 	private String failTimesDetail="";
@@ -79,12 +80,15 @@ public class DubboServiceDayIP implements Shardable{
 	public void setFailTimes(Long failTimes) {
 		this.failTimes = failTimes;
 	}
-	public Long getElapsedAvg() {
+	
+	public BigDecimal getElapsedAvg() {
 		return elapsedAvg;
 	}
-	public void setElapsedAvg(Long elapsedAvg) {
+
+	public void setElapsedAvg(BigDecimal elapsedAvg) {
 		this.elapsedAvg = elapsedAvg;
 	}
+
 	public Long getElapsedMax() {
 		return elapsedMax;
 	}
@@ -146,9 +150,8 @@ public class DubboServiceDayIP implements Shardable{
 	
 	public static DubboServiceDayIP merge(DubboServiceDayIP newDay, DubboServiceDayIP oldDay,boolean needMergeDetail) {
 		if(oldDay.getSuccessTimes()>0||newDay.getSuccessTimes()>0){
-			oldDay.setElapsedAvg((oldDay.getSuccessTimes() * oldDay.getElapsedAvg() + newDay
-					.getSuccessTimes() * newDay.getElapsedAvg())
-					/ (oldDay.getSuccessTimes() + newDay.getSuccessTimes()));
+			oldDay.setElapsedAvg((BigDecimal.valueOf(oldDay.getSuccessTimes()).multiply(oldDay.getElapsedAvg()).add(BigDecimal.valueOf(newDay
+					.getSuccessTimes()).multiply(newDay.getElapsedAvg()))).divide(BigDecimal.valueOf(oldDay.getSuccessTimes() + newDay.getSuccessTimes()),4,BigDecimal.ROUND_HALF_UP));
 		}
 		oldDay.setSuccessTimes(oldDay.getSuccessTimes() + newDay.getSuccessTimes());
 		oldDay.setFailTimes(oldDay.getFailTimes() + newDay.getFailTimes());

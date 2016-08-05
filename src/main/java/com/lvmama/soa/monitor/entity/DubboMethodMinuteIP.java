@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class DubboMethodMinuteIP {
@@ -12,7 +13,7 @@ public class DubboMethodMinuteIP {
 	private Date time;
 	private Long successTimes=0L;
 	private Long failTimes=0L;
-	private Long elapsedTotal=0L;
+	private BigDecimal elapsedTotal=BigDecimal.ZERO;
 	private Long elapsedMax=0L;
 	public Long getId_() {
 		return id_;
@@ -56,10 +57,11 @@ public class DubboMethodMinuteIP {
 	public void setFailTimes(Long failTimes) {
 		this.failTimes = failTimes;
 	}
-	public Long getElapsedTotal() {
+	
+	public BigDecimal getElapsedTotal() {
 		return elapsedTotal;
 	}
-	public void setElapsedTotal(Long elapsedTotal) {
+	public void setElapsedTotal(BigDecimal elapsedTotal) {
 		this.elapsedTotal = elapsedTotal;
 	}
 	public Long getElapsedMax() {

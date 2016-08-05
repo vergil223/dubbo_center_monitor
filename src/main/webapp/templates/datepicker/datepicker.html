@@ -27,7 +27,7 @@
                                    <div class="row number-spinner-group">
                                        <div  class="col-md-5 col-xs-5 col-lg-5 col-sm-5 hour">
                                            <div class="input-group input-group-sm">
-                                               <input  type="text" class="form-control date-picker-number-spinner-input" value="{{startHourTxt}}">
+                                               <input  type="text" class="form-control date-picker-number-spinner-input" value="{{startHourTxt}}" readOnly="true"/>
                                                 <span class="date-picker-number-spinner-wrapper input-group-addon">
                                                    <button type="button" class="date-picker-number-spinner plus" ng-click="startHourEvent('plus')">
                                                        <span class="glyphicon glyphicon-menu-up"></span>
@@ -43,7 +43,7 @@
                                        </div>
                                        <div  class="col-md-5 col-xs-5 col-lg-5 col-sm-5 minute">
                                            <div class="input-group input-group-sm">
-                                               <input name="end" type="text"  class="form-control date-picker-number-spinner-input" value="{{startMinuteTxt}}">
+                                               <input name="end" type="text"  class="form-control date-picker-number-spinner-input" value="{{startMinuteTxt}}" readOnly="true"/>
                                                 <span class="date-picker-number-spinner-wrapper input-group-addon">
                                                    <button type="button" class="date-picker-number-spinner plus"  ng-click="startMinuteEvent('plus')">
                                                        <span class="glyphicon glyphicon-menu-up"></span>
@@ -69,7 +69,7 @@
                                    <div class="row">
                                        <div  class="col-md-5 col-xs-5 col-lg-5 col-sm-5">
                                            <div class="input-group input-group-sm">
-                                               <input type="text" class="form-control date-picker-number-spinner-input" value="{{endHourTxt}}">
+                                               <input type="text" class="form-control date-picker-number-spinner-input" value="{{endHourTxt}}" readOnly="true"/>
                                                 <span class="date-picker-number-spinner-wrapper input-group-addon">
                                                    <button type="button" class="date-picker-number-spinner" ng-click="endHourEvent('plus')">
                                                        <span class="glyphicon glyphicon-menu-up"></span>
@@ -85,7 +85,7 @@
                                        </div>
                                        <div  class="col-md-5 col-xs-5 col-lg-5 col-sm-5">
                                            <div class="input-group input-group-sm">
-                                               <input type="text" class="form-control date-picker-number-spinner-input" value="{{endMinuteTxt}}">
+                                               <input type="text" class="form-control date-picker-number-spinner-input" value="{{endMinuteTxt}}" readOnly="true"/>
                                                 <span class="date-picker-number-spinner-wrapper input-group-addon" >
                                                    <button type="button" class="date-picker-number-spinner" ng-click="endMinuteEvent('plus')">
                                                        <span class="glyphicon glyphicon-menu-up"></span>
@@ -115,9 +115,11 @@
                                         <div class="col-md-6 col-xs-6 col-lg-6 col-sm-6 date-time-picker-tip">
 
                                         </div>
+                                        <!-- 
                                         <div class="col-md-2 col-xs-2 col-lg-2 col-sm-2">
                                             <button type="button" class="date-time-picker-submit btn btn-primary btn-xs" ng-click="submitRange()">确定</button>
                                         </div>
+                                         -->
                                     </div>
                                </td>
                            </tr>

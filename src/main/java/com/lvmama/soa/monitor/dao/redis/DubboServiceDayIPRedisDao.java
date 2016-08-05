@@ -62,8 +62,8 @@ public class DubboServiceDayIPRedisDao {
 		Assert.notEmpty(param.get("service"), "service");
 		Assert.notNull(param.get("time_from"), "time_from");
 		
-		String appName=null;
-		if(appName==null||StringUtil.isNullStr(appName)||StringUtil.isEmpty(param.get("appName").toString())){
+		Object appName=param.get("appName");
+		if(appName==null||StringUtil.isNullStr(appName.toString())||StringUtil.isEmpty(appName.toString())){
 			appName="*";
 		}else{
 			appName=param.get("appName").toString();			

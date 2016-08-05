@@ -15,6 +15,7 @@ public class PropertyUtil {
 			prop.load(PropertyUtil.class.getResourceAsStream("/const.properties"));
 			prop.load(PropertyUtil.class.getResourceAsStream("/redis.properties"));
 			prop.load(PropertyUtil.class.getResourceAsStream("/memcached.properties"));
+			prop.load(PropertyUtil.class.getResourceAsStream("/dubbo.properties"));
 			
 			log.info("[Property values START]----------------------------------");
 			for(Entry<Object,Object> entry:prop.entrySet()){

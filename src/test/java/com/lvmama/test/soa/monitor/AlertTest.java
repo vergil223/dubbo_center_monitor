@@ -218,18 +218,18 @@ public class AlertTest extends BaseTest{
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testMethodDaySuccessTimesWithOtherDaysAlert() {
 		DubboMethodMinuteIP minute=new DubboMethodMinuteIP();
 		minute.setAppName("ALERT_TEST");
 		minute.setConsumerIP("1.1.1.1");
-		minute.setMethod("testMethodDayIPSuccessTimesAlert");
+		minute.setMethod("autoIncrease");
 		minute.setProviderIP("2.2.2.2");
-		minute.setService("com.lvmama.test.soa.monitor.AlertTest");
+		minute.setService("com.pub.api.SoaTestService");
 		
 		//今天每分钟4000次调用
 		long time=DateUtil.trimToMin(DateUtil.now()).getTime();
-		for(int i=1;i<=10;i++){
+		for(int i=1;i<=2;i++){
 			minute.setSuccessTimes(10000L);
 			time+=60000;
 			minute.setTime(new Date(time+60000));

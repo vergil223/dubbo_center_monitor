@@ -83,6 +83,7 @@ public class AlertMsgController {
 			params.put("method", tAltRecordParam.getMethod());
 			params.put("insertTime_from", DateUtil.parse(yyyyMMddHHmmssFrom));
 			params.put("insertTime_to", DateUtil.parse(yyyyMMddHHmmssTo));
+			params.put("alertMsg", tAltRecordParam.getAlertMsg());
 			params.put("currentPage", tAltRecordParam.getCurrentPage());
 			params.put("pageSize", tAltRecordParam.getPageSize());
 			params.put("limitFrom", tAltRecordParam.getLimitFrom());

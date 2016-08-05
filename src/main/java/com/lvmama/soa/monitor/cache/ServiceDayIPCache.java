@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.cache;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class ServiceDayIPCache {
 			dayReference = new AtomicReference<DubboServiceDayIP>();
 			DubboServiceDayIP day = new DubboServiceDayIP(appName, service,
 					consumerIP, providerIP, time);
-			day.setElapsedAvg(0L);
+			day.setElapsedAvg(BigDecimal.ZERO);
 			day.setFailTimes(0L);
 			day.setSuccessTimes(0L);
 			day.setElapsedMax(0L);
@@ -81,26 +82,37 @@ public class ServiceDayIPCache {
 			if (minute.getSuccessTimes() != null
 					&& minute.getSuccessTimes() != 0) {
 				dayUpdated
-						.setElapsedAvg((dayOld.getElapsedAvg()
-								* dayOld.getSuccessTimes() + minute
-									.getElapsedTotal())
-								/ (dayOld.getSuccessTimes() + minute
-										.getSuccessTimes()));
+						.setElapsedAvg((dayOld.getElapsedAvg().multiply(new BigDecimal(dayOld.getSuccessTimes())).add(minute
+								.getElapsedTotal())).divide(new BigDecimal(dayOld.getSuccessTimes() + minute
+										.getSuccessTimes()),4,BigDecimal.ROUND_HALF_UP));
+				
 				dayUpdated.setSuccessTimes(dayOld.getSuccessTimes()
 						+ minute.getSuccessTimes());
+			}else{
+				dayUpdated.setElapsedAvg(dayOld.getElapsedAvg());
 			}
+			
+			
 			if (minute.getSuccessTimes() != null){
 				dayUpdated.setSuccessTimes(dayOld.getSuccessTimes()
 						+ minute.getSuccessTimes());				
+			}else{
+				dayUpdated.setSuccessTimes(dayOld.getSuccessTimes());
 			}
+			
+			
 			if (minute.getFailTimes() != null) {
 				dayUpdated.setFailTimes(dayOld.getFailTimes()
 						+ minute.getFailTimes());
+			}else{
+				dayUpdated.setFailTimes(dayOld.getFailTimes());
 			}
 
 			if (minute.getElapsedMax() != null) {
 				dayUpdated.setElapsedMax(Math.max(dayOld.getElapsedMax(),
 						minute.getElapsedMax()));
+			}else{
+				dayUpdated.setElapsedMax(dayOld.getElapsedMax());
 			}
 			
 			dayUpdated.setElapsedMaxDetail(DubboDetailUtil.mergeDetailToStr(dayOld.getElapsedMaxDetail(), DateUtil.HHmm(minute.getTime()) + " "

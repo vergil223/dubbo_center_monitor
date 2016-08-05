@@ -20,6 +20,13 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.monitor.MonitorService;
+import com.lvmama.soa.monitor.cache.AppMinuteCache;
+import com.lvmama.soa.monitor.cache.MethodDayCache;
+import com.lvmama.soa.monitor.cache.MethodDayIPCache;
+import com.lvmama.soa.monitor.cache.ServiceDayIPCache;
+import com.lvmama.soa.monitor.job.migration.DubboMethodDayIPMigrationJob;
+import com.lvmama.soa.monitor.job.migration.DubboMethodDayMigrationJob;
+import com.lvmama.soa.monitor.job.migration.DubboServiceDayIPMigrationJob;
 import com.lvmama.soa.monitor.service.LvDubboMonitor;
 import com.lvmama.soa.monitor.util.DateUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,6 +36,25 @@ public class LvSimpleDubboMonitorTest extends BaseTest{
 	
 	@Autowired
 	LvDubboMonitor lvSimpleDubboMonitor;
+	
+	@Autowired
+	AppMinuteCache appMinuteCache;
+	
+	@Autowired
+	MethodDayCache methodDayCache;
+	
+	@Autowired
+	MethodDayIPCache methodDayIPCache;
+	
+	@Autowired
+	ServiceDayIPCache serviceDayIPCache;
+	
+	@Autowired
+	DubboMethodDayIPMigrationJob dubboMethodDayIPMigrationJob;
+	@Autowired
+	DubboMethodDayMigrationJob dubboMethodDayMigrationJob;
+	@Autowired
+	DubboServiceDayIPMigrationJob dubboServiceDayIPMigrationJob;
 	
 	private static final String APP_NAME_TEST = "Test_APP_NAME";
 	private static final String yyyyMMddHHmmss = "20151104000000";
@@ -54,6 +80,86 @@ public class LvSimpleDubboMonitorTest extends BaseTest{
 		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, MAX_ELAPSED);
 		
 		lvSimpleDubboMonitor.collect(statistics);
+	}
+	
+	@Test
+	public void testElapsedAvg(){
+		URL statistics=new URL("dubbo", NetUtils.getLocalHost(), 0);
+		statistics=statistics.setHost(PROVIDER);
+		statistics=statistics.addParameter(MonitorService.CONSUMER, CONSUMER);
+		statistics=statistics.addParameter("appName", APP_NAME_TEST);
+		statistics=statistics.setServiceInterface("com.lvmama.test.soa.monitor.LvSimpleDubboMonitorTest");
+		statistics=statistics.addParameter(MonitorService.METHOD, "testInsertProvider");
+		statistics=statistics.addParameter(MonitorService.FAILURE, 0L);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110000");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 1L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 115L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 115L); 
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110100");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 1L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 293L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 293L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110200");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 0L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 0L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 0L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110300");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 0L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 0L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 0L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110400");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 0L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 0L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 0L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110500");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 2L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 247L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 132L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+		statistics=statistics.addParameter(Constants.TIMESTAMP_KEY, "20160801110600");
+		statistics=statistics.addParameter(MonitorService.SUCCESS, 0L);
+		statistics=statistics.addParameter(MonitorService.ELAPSED, 0L);
+		statistics=statistics.addParameter(MonitorService.MAX_ELAPSED, 0L);
+		lvSimpleDubboMonitor.collect(statistics);
+		
+//		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$:"+MethodDayIPCache.getCache());
+		
+		appMinuteCache.writeProviderAppCacheToDB();
+		
+//		@Autowired
+//		MethodDayCache methodDayCache;
+		methodDayCache.writeMethodDayCacheToDB();
+//		@Autowired
+//		MethodDayIPCache methodDayIPCache;
+		methodDayIPCache.writeMethodDayIPCacheToDB();
+//		@Autowired
+//		ServiceDayIPCache serviceDayIPCache;
+		serviceDayIPCache.writeServiceDayIPCacheToDB();
+		
+		
+//		@Autowired
+//		DubboMethodDayIPMigrationJob dubboMethodDayIPMigrationJob;
+		dubboMethodDayIPMigrationJob.redisToMysqlToday();
+//		@Autowired
+//		DubboMethodDayMigrationJob dubboMethodDayMigrationJob;
+		dubboMethodDayMigrationJob.redisToMysqlToday();
+//		@Autowired
+//		DubboServiceDayIPMigrationJob dubboServiceDayIPMigrationJob;
+		dubboServiceDayIPMigrationJob.redisToMysqlToday();
+		
+		System.out.println("END");
 	}
 	
 	@Test

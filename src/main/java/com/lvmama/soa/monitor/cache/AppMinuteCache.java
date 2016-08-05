@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.cache;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class AppMinuteCache {
 			DubboAppMinute app = new DubboAppMinute();
 			app.setAppName(appName);
 			app.setTime(time);
-			app.setElapsedAvg(0L);
+			app.setElapsedAvg(BigDecimal.ZERO);
 			app.setFailTimes(0L);
 			app.setSuccessTimes(0L);
 			app.setElapsedMax(0L);
@@ -73,23 +74,37 @@ public class AppMinuteCache {
 			appUpdated.setAppName(appOld.getAppName());
 			appUpdated.setTime(appOld.getTime());
 			if(minute.getSuccessTimes()!=null&&minute.getSuccessTimes()!=0){
-				appUpdated.setElapsedAvg((appOld.getElapsedAvg()
-						* appOld.getSuccessTimes() + minute.getElapsedTotal())
-						/ (appOld.getSuccessTimes() + minute.getSuccessTimes()));				
+				appUpdated.setElapsedAvg(appOld.getElapsedAvg()
+						.multiply(BigDecimal.valueOf(appOld.getSuccessTimes()))
+						.add(minute.getElapsedTotal()).divide(
+						BigDecimal.valueOf(appOld.getSuccessTimes()
+								+ minute.getSuccessTimes()), 4,
+						BigDecimal.ROUND_HALF_UP));				
+			}else{
+				appUpdated.setElapsedAvg(appOld.getElapsedAvg());
 			}
+			
 			if (minute.getSuccessTimes() != null){
 				appUpdated.setSuccessTimes(appOld.getSuccessTimes()
 						+ minute.getSuccessTimes());				
+			}else{
+				appUpdated.setSuccessTimes(appOld.getSuccessTimes());
 			}
+			
 			if(minute.getFailTimes()!=null){
 				appUpdated.setFailTimes(appOld.getFailTimes()
 						+ minute.getFailTimes());				
+			}else{
+				appUpdated.setFailTimes(appOld.getFailTimes());
 			}
 			
 			if(minute.getElapsedMax()!=null){
 				appUpdated.setElapsedMax(Math.max(appOld.getElapsedMax(),
 						minute.getElapsedMax()));				
+			}else{
+				appUpdated.setElapsedMax(appOld.getElapsedMax());
 			}
+			
 			if (appReference.compareAndSet(appOld, appUpdated)) {
 				break;
 			}

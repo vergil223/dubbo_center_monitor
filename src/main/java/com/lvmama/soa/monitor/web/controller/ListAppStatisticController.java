@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.web.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -161,9 +162,11 @@ public class ListAppStatisticController {
 		DubboAppMinute tmp = new DubboAppMinute();
 		for (DubboAppMinute minute : list) {
 			if (tmp.getSuccessTimes() > 0 || minute.getSuccessTimes() > 0) {
-				tmp.setElapsedAvg((tmp.getSuccessTimes() * tmp.getElapsedAvg() + minute
-						.getSuccessTimes() * minute.getElapsedAvg())
-						/ (tmp.getSuccessTimes() + minute.getSuccessTimes()));
+				tmp.setElapsedAvg((BigDecimal.valueOf(tmp.getSuccessTimes())
+						.multiply(tmp.getElapsedAvg()).add(BigDecimal.valueOf(minute
+								.getSuccessTimes()).multiply(minute.getElapsedAvg())))
+						.divide(BigDecimal.valueOf(tmp.getSuccessTimes() + minute.getSuccessTimes()), 4,
+								BigDecimal.ROUND_HALF_UP));
 			}
 			tmp.setSuccessTimes(tmp.getSuccessTimes()
 					+ minute.getSuccessTimes());

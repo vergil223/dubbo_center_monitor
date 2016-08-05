@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class DubboAppMinute {
@@ -8,7 +9,7 @@ public class DubboAppMinute {
 	private Date time;
 	private Long successTimes=0L;
 	private Long failTimes=0L;
-	private Long elapsedAvg=0L;
+	private BigDecimal elapsedAvg=BigDecimal.ZERO;
 	private Long elapsedMax=0L;
 	
 	public String toString() {
@@ -49,12 +50,15 @@ public class DubboAppMinute {
 	public void setFailTimes(Long failTimes) {
 		this.failTimes = failTimes;
 	}
-	public Long getElapsedAvg() {
+	
+	public BigDecimal getElapsedAvg() {
 		return elapsedAvg;
 	}
-	public void setElapsedAvg(Long elapsedAvg) {
+
+	public void setElapsedAvg(BigDecimal elapsedAvg) {
 		this.elapsedAvg = elapsedAvg;
 	}
+
 	public Long getElapsedMax() {
 		return elapsedMax;
 	}

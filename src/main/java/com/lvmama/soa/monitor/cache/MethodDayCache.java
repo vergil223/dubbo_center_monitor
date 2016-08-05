@@ -1,5 +1,6 @@
 package com.lvmama.soa.monitor.cache;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class MethodDayCache {
 		if (dayReference == null) {
 			dayReference = new AtomicReference<DubboMethodDay>();
 			DubboMethodDay day = new DubboMethodDay(appName, service, method, time);
-			day.setElapsedAvg(0L);
+			day.setElapsedAvg(BigDecimal.ZERO);
 			day.setFailTimes(0L);
 			day.setSuccessTimes(0L);
 			day.setElapsedMax(0L);
@@ -75,26 +76,36 @@ public class MethodDayCache {
 			if (minute.getSuccessTimes() != null
 					&& minute.getSuccessTimes() != 0) {
 				dayUpdated
-						.setElapsedAvg((dayOld.getElapsedAvg()
-								* dayOld.getSuccessTimes() + minute
-									.getElapsedTotal())
-								/ (dayOld.getSuccessTimes() + minute
-										.getSuccessTimes()));
+						.setElapsedAvg((dayOld.getElapsedAvg().multiply(BigDecimal.valueOf(dayOld.getSuccessTimes())).add(minute
+									.getElapsedTotal())).divide(BigDecimal.valueOf(dayOld.getSuccessTimes() + minute
+										.getSuccessTimes()),4,BigDecimal.ROUND_HALF_UP));
+			}else{
+				dayUpdated.setElapsedAvg(dayOld.getElapsedAvg());
 			}
 			
 			if (minute.getSuccessTimes() != null){
 				dayUpdated.setSuccessTimes(dayOld.getSuccessTimes()
 						+ minute.getSuccessTimes());				
+			}else{
+				dayUpdated.setSuccessTimes(dayOld.getSuccessTimes());
 			}
+			
+			
 			if (minute.getFailTimes() != null) {
 				dayUpdated.setFailTimes(dayOld.getFailTimes()
 						+ minute.getFailTimes());
+			}else{
+				dayUpdated.setFailTimes(dayOld.getFailTimes());
 			}
 
 			if (minute.getElapsedMax() != null) {
 				dayUpdated.setElapsedMax(Math.max(dayOld.getElapsedMax(),
 						minute.getElapsedMax()));
+			}else{
+				dayUpdated.setElapsedMax(dayOld.getElapsedMax());
 			}
+			
+			
 			dayUpdated.setElapsedMaxDetail(DubboDetailUtil.mergeDetailToStr(dayOld.getElapsedMaxDetail(), DateUtil.HHmm(minute.getTime()) + " "
 					+ minute.getElapsedMax(), true));
 			dayUpdated.setElapsedTotalDetail(DubboDetailUtil.mergeDetailToStr(dayOld.getElapsedTotalDetail(), DateUtil.HHmm(minute.getTime()) + " "

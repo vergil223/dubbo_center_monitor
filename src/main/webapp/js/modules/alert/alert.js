@@ -41,14 +41,14 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
     $scope.isEmpty=false;
     
     $scope.totalCount=0;
-    $scope.pageSize=6;
+    $scope.pageSize=10;
     $scope.pagination = {
             last: 1,
             current: 1
     };
     
     $scope.timeRange={};
-    $scope.timeRange.startTime=new Date().getTime();
+    $scope.timeRange.startTime=new Date().getTime()-300000;
     $scope.timeRange.endTime=new Date().getTime();
     
     $scope.query={};
@@ -68,7 +68,7 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
     }
     
     $scope.sortKey = "INSERT_TIME";   
-	$scope.reverse = false; 
+	$scope.reverse = true; 
     
     $scope.sort = function(keyname){
 		$scope.sortKey = keyname;   //set the sortKey to the param passed
@@ -77,7 +77,6 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
 	}
     
     var doRefreshData=function(){
-
     	var params={};
     	if($scope.query.appName){
     		params.appName=$scope.query.appName;
@@ -87,6 +86,9 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
 		}
 		if($scope.query.method){
 			params.method=$scope.query.method;
+		}
+		if($scope.query.alertMsg){
+			params.alertMsg=$scope.query.alertMsg;
 		}
 		if($scope.pageSize){
 			params.pageSize=$scope.pageSize;			
@@ -100,6 +102,7 @@ alert.controller('listAlertMsg', function ($scope,$httpWrapper,$routeParams,$que
         var timeFrom = initStartDate.getFullYear()+numberFormat(initStartDate.getMonth()+1)+numberFormat(initStartDate.getDate())+numberFormat(initStartDate.getHours())+numberFormat(initStartDate.getMinutes())+"00";
         var timeTo = initEndDate.getFullYear()+numberFormat(initEndDate.getMonth()+1)+numberFormat(initEndDate.getDate())+numberFormat(initEndDate.getHours())+numberFormat(initEndDate.getMinutes())+"00";
         
+//        debugger;
 //      $scope.sortKey = keyname;   //set the sortKey to the param passed
 //		$scope.reverse = !$scope.reverse;
         var sortBy=$scope.sortKey;

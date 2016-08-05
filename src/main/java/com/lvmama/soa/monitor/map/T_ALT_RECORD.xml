@@ -49,16 +49,13 @@
         and INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP}
       </if>
       <if test="alertMsg != null" >
-        and ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR}
+      	and ALERT_MSG like '%${alertMsg}%'
       </if>
       <if test="insertTime_from != null" >
       	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
       </if>
       <if test="insertTime_to != null" >
       	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
-      </if>
-      <if test="alertMsg != null" >
-        and ALERT_MSG like '%${alertMsg,jdbcType=LONGVARCHAR}'
       </if>
       
       <if test="sortBy!=null">
@@ -157,16 +154,13 @@
         and INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP}
       </if>
       <if test="alertMsg != null" >
-        and ALERT_MSG = #{alertMsg,jdbcType=LONGVARCHAR}
+        and ALERT_MSG like '%${alertMsg}%'
       </if>
       <if test="insertTime_from != null" >
       	<![CDATA[and INSERT_TIME>=#{insertTime_from,jdbcType=TIMESTAMP}]]>
       </if>
       <if test="insertTime_to != null" >
       	<![CDATA[and INSERT_TIME<=#{insertTime_to,jdbcType=TIMESTAMP}]]>
-      </if>
-      <if test="alertMsg != null" >
-        and ALERT_MSG like '%${alertMsg,jdbcType=LONGVARCHAR}'
       </if>
   </select>
   

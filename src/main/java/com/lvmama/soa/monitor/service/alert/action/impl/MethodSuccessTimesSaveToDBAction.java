@@ -19,17 +19,17 @@ public class MethodSuccessTimesSaveToDBAction extends AbstractAction {
 	@Override
 	protected void doAction(Map<String, Object> param,
 			Map<String, String> actionParam) {
-		DubboMethodDay dubboMethodDayIP=(DubboMethodDay)param.get(AlertParamKey.DUBBO_METHOD_DAY);
-		if(dubboMethodDayIP==null){
+		DubboMethodDay dubboMethodDay=(DubboMethodDay)param.get(AlertParamKey.DUBBO_METHOD_DAY);
+		if(dubboMethodDay==null){
 			return;
 		}
 		
 		IAlertRecordService iAlertRecordService=(IAlertRecordService)SpringUtil.getContext().getBean("alertRecordService");
 		
 		TAltRecord tAltRecord=new TAltRecord();
-		tAltRecord.setAppName(dubboMethodDayIP.getAppName());
-		tAltRecord.setService(dubboMethodDayIP.getService());
-		tAltRecord.setMethod(dubboMethodDayIP.getMethod());
+		tAltRecord.setAppName(dubboMethodDay.getAppName());
+		tAltRecord.setService(dubboMethodDay.getService());
+		tAltRecord.setMethod(dubboMethodDay.getMethod());
 		tAltRecord.setInsertTime(DateUtil.now());
 		List<String> alertMsgList=(List<String>)param.get(AlertParamKey.ALERT_MSG);
 		if(alertMsgList!=null){

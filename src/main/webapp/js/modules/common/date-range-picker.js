@@ -35,6 +35,7 @@ dateRangePicker.directive("dateRangePicker",function(){
                     }
                 }
                 formatHourAndMinute();
+                $scope.submitRange();
             }
             var init = function(){
                 var initStartDate = new Date($scope.timeRange.startTime);
@@ -65,6 +66,7 @@ dateRangePicker.directive("dateRangePicker",function(){
                     }
                 }
                 formatHourAndMinute();
+                $scope.submitRange();
             }
             $scope.endMinuteEvent=function(type){
                 if(type=='plus'){
@@ -91,6 +93,7 @@ dateRangePicker.directive("dateRangePicker",function(){
                     }
                 }
                 formatHourAndMinute();
+                $scope.submitRange();
             }
             $scope.endHourEvent=function(type){
                 if(type=='plus'){
@@ -107,6 +110,7 @@ dateRangePicker.directive("dateRangePicker",function(){
                     }
                 }
                 formatHourAndMinute();
+                $scope.submitRange();
             }
 
             $scope.toggleRangeBlock=function(){
@@ -136,9 +140,12 @@ dateRangePicker.directive("dateRangePicker",function(){
             formatHourAndMinute();
 
             $scope.submitRange = function(){
-                $scope.rangeSlipUp=false;
-                var startDate = $scope.startDate+"T"+$scope.startHourTxt+":"+$scope.startMinuteTxt;
-                var endDate =  $scope.endDate+"T"+$scope.endHourTxt+":"+$scope.endMinuteTxt;
+                //$scope.rangeSlipUp=false;
+                //var startDate = $scope.startDate+"T"+$scope.startHourTxt+":"+$scope.startMinuteTxt;
+                //var endDate =  $scope.endDate+"T"+$scope.endHourTxt+":"+$scope.endMinuteTxt;
+                //不使用ISO 8601 标准时间格式（格林威治时间）
+                var startDate = $scope.startDate+" "+$scope.startHourTxt+":"+$scope.startMinuteTxt;
+                var endDate =  $scope.endDate+" "+$scope.endHourTxt+":"+$scope.endMinuteTxt;
                 var temp = {};
                 temp.startTime = new Date(startDate).getTime();
                 temp.endTime = new Date(endDate).getTime();
@@ -148,15 +155,33 @@ dateRangePicker.directive("dateRangePicker",function(){
             $scope.changeRange=function(rangeSize){
                 var endDate = new Date();
                 var startDate = new Date(endDate.getTime()-rangeSize*60*60*1000);
-                start.data('datepicker').setDate(startDate);
-                end.data('datepicker').setDate(endDate);
+                
                 $scope.startHour = startDate.getHours();
                 $scope.startMinute = startDate.getMinutes();
+                $scope.startDate = startDate.getFullYear()+"-"+numberFormat(startDate.getMonth()+1)+"-"+numberFormat(startDate.getDate());
+
                 $scope.endHour = endDate.getHours();
                 $scope.endMinute = endDate.getMinutes();
-                $scope.startDate = startDate.getFullYear()+"-"+numberFormat(startDate.getMonth()+1)+"-"+numberFormat(startDate.getDate());
                 $scope.endDate = endDate.getFullYear()+"-"+numberFormat(endDate.getMonth()+1)+"-"+numberFormat(endDate.getDate());
                 formatHourAndMinute();
+                $scope.submitRange();
+                
+                start.data('datepicker').setDate($scope.startDate);
+                end.data('datepicker').setDate($scope.endDate);
+            }
+            
+            var startDateChange=function(){
+                var startDate=start.data('datepicker').getDate();
+                $scope.startDate = startDate.getFullYear()+"-"+numberFormat(startDate.getMonth()+1)+"-"+numberFormat(startDate.getDate());
+                formatHourAndMinute();
+                $scope.submitRange();
+            }
+            
+            var endDateChange=function(){  
+                var endDate=end.data('datepicker').getDate();
+                $scope.endDate = endDate.getFullYear()+"-"+numberFormat(endDate.getMonth()+1)+"-"+numberFormat(endDate.getDate());
+                formatHourAndMinute();
+                $scope.submitRange();
             }
 
             var start = $(element.get(0)).find(".start").datepicker({
@@ -166,6 +191,13 @@ dateRangePicker.directive("dateRangePicker",function(){
             });
             start.on("changeDate",function(e){
                 end.data('datepicker').setStartDate(e.date);
+                
+                if(e.date){
+                	startDateChange();                	
+                }
+                
+                formatHourAndMinute();
+                $scope.submitRange();
             });
             var end = $(element.get(0)).find(".end").datepicker({
                 format: "yyyy-mm-dd",
@@ -175,6 +207,11 @@ dateRangePicker.directive("dateRangePicker",function(){
             end.on("changeDate",function(e){
                 var time = e.date.getTime()+60*60*1000;
                 start.data('datepicker').setEndDate(new Date(time));
+                if(e.date){
+                	endDateChange();
+                }
+                formatHourAndMinute();
+                $scope.submitRange();
             });
             init();
         }

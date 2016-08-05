@@ -1,5 +1,6 @@
 package com.lvmama.test.soa.monitor;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DubboAppMinuteServiceTest extends BaseTest{
 		app.setTime(new SimpleDateFormat(yyyyMMddHHmmss).parse("20881011133000"));
 		app.setSuccessTimes(10000L);
 		app.setFailTimes(1L);
-		app.setElapsedAvg(1L);
+		app.setElapsedAvg(BigDecimal.ONE);
 		app.setElapsedMax(5L);
 		
 		dubboAppMinuteService.insertOrAppend(app);
@@ -63,6 +64,11 @@ public class DubboAppMinuteServiceTest extends BaseTest{
 		for(String appName:appNames){
 			System.out.println(appName);			
 		}
+	}
+	
+	@Test
+	public void writeProviderAppCacheToDB(){
+		
 	}
 	
 }

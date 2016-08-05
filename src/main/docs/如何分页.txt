@@ -11,10 +11,12 @@ angularJS业务controller里需要定义JS的分页对象：
             current: 1
     };
 【排序】
-<th ng-click="sort('APP_NAME')">appName
-										<span class="glyphicon sort-icon" ng-show="sortKey=='APP_NAME'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-										<input type="text" class="inner-form-element" ng-model="query.appName" ng-change="filter()" placeholder="输入应用名">
-									</th>
+<th>
+	<div ng-click="sort('APP_NAME')">appName
+		<span class="glyphicon sort-icon" ng-show="sortKey=='APP_NAME'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"> </span>
+	</div>
+	<input type="text" class="inner-form-element" ng-model="query.appName"  placeholder="输入应用名"/>
+</th>
 
 controller要定义排序属性和排序方法，并实现sort方法：
 $scope.sortKey = "INSERT_TIME";   

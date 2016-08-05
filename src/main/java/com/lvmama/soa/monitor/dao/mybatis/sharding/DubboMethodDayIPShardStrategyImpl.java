@@ -14,7 +14,7 @@ import com.lvmama.soa.monitor.util.SpringUtil;
 import com.lvmama.soa.monitor.util.StringUtil;
 
 @Deprecated
-//some sql which contains sub select is not supported by shardbatis, so this class is used now.
+//some sql which contains sub select is not supported by shardbatis, so this class is not used now.
 public class DubboMethodDayIPShardStrategyImpl implements ShardStrategy{
 	private static final Set<String> existsTableNames=new HashSet<String>();
 	

@@ -1,5 +1,6 @@
 package com.lvmama.test.soa.monitor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -108,14 +109,14 @@ public class DubboMethodDayIPServiceTest extends BaseTest{
 				"111.333.555.777", "222.444.666.888", DateUtil.trimToDay(now));
 		day.setSuccessTimes(10L);
 		day.setFailTimes(1L);
-		day.setElapsedAvg(2L);
+		day.setElapsedAvg(BigDecimal.valueOf(2L));
 		day.setElapsedMax(5L);
 		day.setSuccessTimesDetail(DateUtil.HHmm(now) + " "
 				+ day.getSuccessTimes()+StringUtil.getLineSeparator());
 		day.setFailTimesDetail(DateUtil.HHmm(now) + " "
 				+ day.getFailTimes()+StringUtil.getLineSeparator());
 		day.setElapsedTotalDetail(DateUtil.HHmm(now) + " "
-				+ day.getElapsedAvg()*day.getSuccessTimes()+StringUtil.getLineSeparator());
+				+ day.getElapsedAvg().multiply(BigDecimal.valueOf(day.getSuccessTimes()))+StringUtil.getLineSeparator());
 		day.setElapsedMaxDetail(DateUtil.HHmm(now) + " "
 				+ day.getElapsedMax()+StringUtil.getLineSeparator());
 		
