@@ -1,5 +1,6 @@
 package com.lvmama.test.soa.monitor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,13 +57,17 @@ public class AlertTest extends BaseTest{
 //		testMethodDayIPSuccessTimesWithOtherDaysAlert();
 		
 //		prepareYesterdaysDataMethod();
-		testMethodDaySuccessTimesWithOtherDaysAlert();
+//		testMethodDaySuccessTimesWithOtherDaysAlert();
 		
 //		testMethodDaySuccessTimesWithinOneDayAlert();
 		
 //		testGetAlertMsg();
 //		
 //		countAlertMsg();
+		
+//		prepareYesterdaysDataMethodForElapsedAvg();
+		testMethodDayElapsedAvgWithOtherDaysAlert();
+//		testMethodDayElapsedAvgTodayAlert();
 	}
 	
 //	@Test
@@ -203,6 +208,7 @@ public class AlertTest extends BaseTest{
 				minute.setProviderIP("4.4.4.4");
 			}
 			minute.setSuccessTimes(1000L);
+			minute.setElapsedTotal(new BigDecimal("2000"));
 			time+=60000;
 			minute.setTime(new Date(time+60000));
 			MethodDayCache.updateProviderCache(minute);
@@ -236,6 +242,97 @@ public class AlertTest extends BaseTest{
 			methodDayCache.updateProviderCache(minute);
 		}
 		
+		methodDayCache.writeMethodDayCacheToDB();
+		
+		try{
+			System.in.read();			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void prepareYesterdaysDataMethodForElapsedAvg() {
+		DubboMethodMinuteIP minute=new DubboMethodMinuteIP();
+		minute.setAppName("ALERT_TEST");
+		minute.setConsumerIP("1.1.1.1");
+		minute.setMethod("testMethodDayElapsedAvg");
+		minute.setProviderIP("2.2.2.2");
+		minute.setService("com.lvmama.test.soa.monitor.AlertTest");
+		
+		//前一天每分钟1000次调用
+		long time=DateUtil.trimToMin(DateUtil.daysBefore(DateUtil.now(), 1)).getTime();
+		for(int i=1;i<=360;i++){
+			minute.setSuccessTimes(100L);
+			minute.setElapsedTotal(new BigDecimal("100"));
+			time+=60000;
+			minute.setTime(new Date(time+60000));
+			MethodDayCache.updateProviderCache(minute);
+		}
+				
+		methodDayCache.writeMethodDayCacheToDB();
+		dubboMethodDayService.migrateFromRedisToMysql(DateUtil.yyyyMMdd(DateUtil.daysBefore(DateUtil.now(), 1)));
+		
+		try{
+			Thread.sleep(5000L);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testMethodDayElapsedAvgWithOtherDaysAlert() {
+		DubboMethodMinuteIP minute=new DubboMethodMinuteIP();
+		minute.setAppName("ALERT_TEST");
+		minute.setConsumerIP("1.1.1.1");
+		minute.setMethod("testMethodDayElapsedAvg");
+		minute.setProviderIP("2.2.2.2");
+		minute.setService("com.lvmama.test.soa.monitor.AlertTest");
+		
+		//今天每分钟4000次调用
+		long time=DateUtil.trimToMin(DateUtil.now()).getTime();
+		for(int i=1;i<=10;i++){
+			minute.setSuccessTimes(100L);
+			minute.setElapsedTotal(new BigDecimal("600"));
+			time+=60000;
+			minute.setTime(new Date(time+60000));
+			methodDayCache.updateProviderCache(minute);
+		}
+		
+		methodDayCache.writeMethodDayCacheToDB();
+		
+		try{
+			System.in.read();			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testMethodDayElapsedAvgTodayAlert() {
+		DubboMethodMinuteIP minute=new DubboMethodMinuteIP();
+		minute.setAppName("ALERT_TEST");
+		minute.setConsumerIP("1.1.1.1");
+		minute.setMethod("testMethodDayElapsedAvgToday");
+		minute.setProviderIP("2.2.2.2");
+		minute.setService("com.lvmama.test.soa.monitor.AlertTest");
+		
+		//今天每分钟4000次调用
+		long time=DateUtil.trimToMin(DateUtil.now()).getTime();
+		for(int i=1;i<=10;i++){
+			minute.setSuccessTimes(100L);
+			minute.setElapsedTotal(new BigDecimal("100"));
+			time+=60000;
+			minute.setTime(new Date(time+60000));
+			methodDayCache.updateProviderCache(minute);
+		}
+		
+		methodDayCache.writeMethodDayCacheToDB();
+		
+		minute.setSuccessTimes(100L);
+		minute.setElapsedTotal(new BigDecimal("600"));
+		time+=60000;
+		minute.setTime(new Date(time+60000));
+		methodDayCache.updateProviderCache(minute);
 		methodDayCache.writeMethodDayCacheToDB();
 		
 		try{

@@ -11,3 +11,4 @@ CREATE TABLE `T_ALT_ACTION` (
 
 INSERT INTO `T_ALT_ACTION` (`ID_`, `CONTENT_TYPE`, `CONTENT`, `DESCRIPTION`, `ENABLED`) VALUES (1, 'JAVA_CLASS', 'com.lvmama.soa.monitor.service.alert.action.impl.MethodSuccessTimesLogAction', '在后台打印log', 'N');
 INSERT INTO `T_ALT_ACTION` (`ID_`, `CONTENT_TYPE`, `CONTENT`, `DESCRIPTION`, `ENABLED`) VALUES (2, 'JAVA_CLASS', 'com.lvmama.soa.monitor.service.alert.action.impl.MethodSuccessTimesSaveToDBAction', '存入T_ALT_RECORD', 'Y');
+INSERT INTO `T_ALT_ACTION` (`ID_`, `CONTENT_TYPE`, `CONTENT`, `DESCRIPTION`, `ENABLED`) VALUES (3, 'JAVA_CLASS', 'com.lvmama.soa.monitor.service.alert.action.impl.MethodMockAction', '在dubbo的zookeeper注册中心添加该方法的强制mock规则，过一段时间再恢复', 'Y');
