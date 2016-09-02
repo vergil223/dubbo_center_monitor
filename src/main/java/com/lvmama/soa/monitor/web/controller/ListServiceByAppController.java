@@ -74,8 +74,10 @@ public class ListServiceByAppController {
 			
 			if(successTimes2>successTimes1){
 				return 1;
-			}else{
+			}else if(successTimes2<successTimes1){
 				return -1;
+			}else{
+				return 0;
 			}
 		}
 	}

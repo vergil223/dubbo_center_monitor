@@ -2,6 +2,7 @@ package com.lvmama.soa.monitor.service.alert.condition.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,27 @@ public class MethodElapsedAvgTodayCondition extends AbstractCondition {
 		}
 		
 		return false;
+	}
+	
+	public static void main(String args[]){
+		DubboMethodDay day=new DubboMethodDay();
+		day.setAppName("pet_public");
+		day.setService("com.lvmama.comm.pet.service.seo.RecommendInfoService");
+		day.setMethod("getRecommendInfoByParentBlockIdAndPageChannel");
+		day.setSuccessTimesDetail("1550 1\n1551 6\n1552 60\n1553 21\n1554 1\n1555 1\n1556 1\n1557 28\n1558 0\n");
+		day.setElapsedTotalDetail("1550 62\n1551 1540511\n1552 16190481\n1553 6083402\n1554 1383\n1555 212\n1556 131\n1557 5597867\n1558 0\n");
+		day.setTime(DateUtil.now());
+		
+		Map<String, Object> param =new HashMap<String, Object>();
+		param.put(AlertParamKey.DUBBO_METHOD_DAY, day);
+		
+		Map<String, String> conditionParam=new HashMap<String, String>(); 
+		conditionParam.put("percentIncrease", "4");
+		conditionParam.put("minutesToCompare", "10");
+		
+		boolean matched=new MethodElapsedAvgTodayCondition().doMatch(param, conditionParam);
+		System.out.println(matched);
+		System.out.println(matched);
 	}
 	
 }
